@@ -54,12 +54,14 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 // }machine_state_t;
 
-static piezo_pin_data_t piezo_enter;
-static loop_pin_data_t loop_enter;
-static loop_pin_data_t loop_exit ;
+
 
 uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
-{   
+{ 
+    static piezo_pin_data_t piezo_enter;
+    static loop_pin_data_t loop_enter;
+    static loop_pin_data_t loop_exit ;  
+
     switch (traffic.lane[lane_index].state)
     {
     case LANE_INIT:
@@ -77,7 +79,7 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
         loop_exit.loop_period_turn_on           = traffic.lane[lane_index].lenght_mts *(77+5);
         loop_exit.time_restart_between_cycles   = traffic.lane[lane_index].gap - calc_velocity_kmh;
 
-        uint8_t porcentage = 10;
+        uint8_t porcentage = 30;
 
         piezo_enter.delay_init = (calc_velocity_kmh*porcentage)/100;
         piezo_enter.period_turn_on = 10;
