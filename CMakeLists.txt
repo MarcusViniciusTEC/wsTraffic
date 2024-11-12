@@ -52,14 +52,15 @@ ${PROJ_PATH}/Core/Src/stm32f0xx_it.c
 ${PROJ_PATH}/Core/Src/sysmem.c 
 ${PROJ_PATH}/Core/Src/syscalls.c 
 ${PROJ_PATH}/Core/Src/system_stm32f0xx.c
-# ${PROJ_PATH}/Core/Src/usart.c
+
 
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_utils.c 
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_rcc.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_pwr.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_gpio.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_exti.c
-
+${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_tim.c
+${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_dma.c
 
 ${PROJ_PATH}/Core/Startup/startup_stm32f030r8tx.s
 
