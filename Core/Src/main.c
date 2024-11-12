@@ -79,7 +79,7 @@ int main(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
   /* SysTick_IRQn interrupt configuration */
-  NVIC_SetPriority(SysTick_IRQn, 3);
+  NVIC_SetPriority(SysTick_IRQn, 2);
 
   /* USER CODE BEGIN Init */
 
@@ -95,19 +95,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM6_Init();
-
   /* USER CODE BEGIN 2 */
-    sl_init();
-    RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
+
+  sl_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
     sl_update();
-
+    //LL_TIM_EnableIT_UPDATE(TIM6);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -173,7 +172,7 @@ static void MX_TIM6_Init(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM6);
 
   /* TIM6 interrupt Init */
-  NVIC_SetPriority(TIM6_IRQn, 0);
+  NVIC_SetPriority(TIM6_IRQn, 3);
   NVIC_EnableIRQ(TIM6_IRQn);
 
   /* USER CODE BEGIN TIM6_Init 1 */
@@ -183,10 +182,12 @@ static void MX_TIM6_Init(void)
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 1;
   LL_TIM_Init(TIM6, &TIM_InitStruct);
- 
+  LL_TIM_DisableARRPreload(TIM6);
   /* USER CODE BEGIN TIM6_Init 2 */
-
-
+ 
+  LL_TIM_EnableIT_UPDATE(TIM6); 
+  LL_TIM_EnableCounter(TIM6); 
+  
   /* USER CODE END TIM6_Init 2 */
 
 }
