@@ -59,7 +59,7 @@ void loop_init(void)
 
 void loop_update(void)
 {
-  //hmi_led_turn_on(0);
+  hmi_led_toggle(0);
 }            
 
 /******************************************************************************/

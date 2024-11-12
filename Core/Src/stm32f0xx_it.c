@@ -131,7 +131,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
-   sl_1ms_clock();
+   ///sl_1ms_clock();
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -152,6 +152,8 @@ void TIM6_IRQHandler(void)
 
   /* USER CODE END TIM6_IRQn 0 */
   /* USER CODE BEGIN TIM6_IRQn 1 */
+
+  sl_1ms_clock();
 
   /* USER CODE END TIM6_IRQn 1 */
 }

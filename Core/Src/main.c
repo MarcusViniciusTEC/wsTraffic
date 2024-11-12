@@ -95,9 +95,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM6_Init();
-  /* USER CODE BEGIN 2 */
 
+  /* USER CODE BEGIN 2 */
     sl_init();
+    RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -182,8 +183,9 @@ static void MX_TIM6_Init(void)
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 1;
   LL_TIM_Init(TIM6, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM6);
+ 
   /* USER CODE BEGIN TIM6_Init 2 */
+
 
   /* USER CODE END TIM6_Init 2 */
 
