@@ -9,25 +9,34 @@
 
 #define TIME_ZERO 0
 
-typedef enum
-{
-  AXLE_1 = 0U,
-  AXLE_2,
-  AXLE_3,
-  AXLE_4,
-  AXLE_5,
-  AXLE_7,
-  AXLE_8,
-  AXLE_9,
-  NUMBER_OF_AXLES_MAX
-}axles_id_t;
 
 typedef enum
 {
-  LANE_1 = 0,
-  LANE_2,
-  NUMBER_OF_LANES
-}number_of_lanes_t;
+    LANE_0 = 0U,
+    LANE_1,
+    NUMBER_OF_LANES
+}lane_t;
+
+
+
+typedef enum
+{
+  LANE_LOOP_INIT = 0U,
+  LANE_LOOP_START,
+}loop_lane_state_t;
+
+
+typedef struct 
+{
+    loop_lane_state_t state;
+}lane_loop_data_t;
+
+
+typedef struct  
+{
+  lane_loop_data_t lane_loop[NUMBER_OF_LANES];
+}traffic_t;
+
 
 typedef enum
 {

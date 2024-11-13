@@ -30,24 +30,39 @@ uint32_t sequency[6][18] = {0};
 
 void app_1us_clock() /*10uS*/
 {
-    static uint32_t counter = 0;
-
-    if(counter == 0)
-    {
-        hmi_led_turn_on(0);
-    }
-    if(counter  == 200)
-    {
-        hmi_led_turn_on(1);
-        counter = 0;
-    }
-
-    counter++;
-    
-
-
 
 }
+
+traffic_t traffic;
+
+
+uint8_t loop_update_state(lane_t lane, uint16_t velocity_ms, uint16_t weight_ms)
+{
+    switch (traffic.lane_loop[lane].state)
+    {
+    case LANE_LOOP_INIT:
+       
+       traffic.lane_loop[lane].state = LANE_LOOP_START;
+        break;
+    case LANE_LOOP_START:
+
+        break;
+    default:
+        break;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 {
