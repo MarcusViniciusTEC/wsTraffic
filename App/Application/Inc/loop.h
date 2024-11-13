@@ -21,6 +21,8 @@ void piezo_turn_off(uint8_t index);
 
 /******************************************************************************/
 
+void loop_turn_on(uint8_t index);
+void loop_turn_off(uint8_t index);
 void loop_1ms_clock(void);              
 void loop_init(void);                   
 void loop_update(void);                  
