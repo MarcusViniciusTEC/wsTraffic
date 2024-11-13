@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 
 #include "sl.h"
+#include "app.h"
 
 /* USER CODE END Includes */
 
@@ -129,9 +130,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
   /* USER CODE END SysTick_IRQn 0 */
-
   /* USER CODE BEGIN SysTick_IRQn 1 */
-  LL_GPIO_TogglePin(SENSE_2_LED_GPIO_Port, SENSE_2_LED_Pin);
   sl_1ms_clock();
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -149,12 +148,10 @@ void SysTick_Handler(void)
 void TIM6_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_IRQn 0 */
-
-  LL_GPIO_TogglePin(SENSE_1_LED_GPIO_Port, SENSE_1_LED_Pin);
+  app_1us_clock();
+  LL_TIM_ClearFlag_UPDATE(TIM6);
   /* USER CODE END TIM6_IRQn 0 */
   /* USER CODE BEGIN TIM6_IRQn 1 */
- 
-  LL_TIM_ClearFlag_UPDATE(TIM6);
   /* USER CODE END TIM6_IRQn 1 */
 }
 

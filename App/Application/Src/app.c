@@ -8,7 +8,7 @@
 #include "loop.h"
 #include "piezo.h"
 //#include "wlog.h"
-//test
+
 
 /******************************************************************************/
 
@@ -19,6 +19,35 @@
 volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
+
+uint32_t sequency[6][18] = {0};
+
+#define LOOP_ENTER_CH0          0
+#define LOOP_EXIT_CH0           1
+
+#define PIEZO_ENTER_CH0         2 
+
+
+void app_1us_clock() /*10uS*/
+{
+    static uint32_t counter = 0;
+
+    if(counter == 0)
+    {
+        hmi_led_turn_on(0);
+    }
+    if(counter  == 200)
+    {
+        hmi_led_turn_on(1);
+        counter = 0;
+    }
+
+    counter++;
+    
+
+
+
+}
 
 void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 {

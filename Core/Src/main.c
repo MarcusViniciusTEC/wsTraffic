@@ -66,7 +66,6 @@ static void MX_TIM6_Init(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
   //__enable_irq();
 
@@ -178,9 +177,9 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 1 */
 
   /* USER CODE END TIM6_Init 1 */
-  TIM_InitStruct.Prescaler = 47-LL_TIM_IC_FILTER_FDIV1_N2;
+  TIM_InitStruct.Prescaler = 47-1;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 1;
+  TIM_InitStruct.Autoreload = 10;
   LL_TIM_Init(TIM6, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM6);
   /* USER CODE BEGIN TIM6_Init 2 */
