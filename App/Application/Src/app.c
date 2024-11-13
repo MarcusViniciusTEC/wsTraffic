@@ -28,106 +28,33 @@ uint16_t gap_traffic = 0;
 
 /******************************************************************************/
 
+uint32_t sequency[6][18] = {0};
 
-void traffic_calculation_app(void)
+#define LOOP_ENTER_CH0          0
+#define LOOP_EXIT_CH0           1
+
+#define PIEZO_ENTER_CH0         2 
+
+
+void app_1us_clock() /*10uS*/
 {
-    static uint32_t speed_in_meters_per_second = 0;
-    static uint32_t time_in_loop = 0;
-    static uint32_t time_between_loops = 0;
-    static uint32_t time_spent_in_the_bonds = 0;
+    static uint32_t counter = 0;
 
-    speed_traffic = 50;
-    vehicle_length = 12;
-    gap_traffic = 3000;
-
-    /* Area dos calculos*/
-    speed_in_meters_per_second = ((speed_traffic * 1000)/ 3.6);
-
-    time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) / speed_in_meters_per_second);
-
-    time_in_loop = ((LENGHT_LOOP_MTS * 1000000) / speed_in_meters_per_second);
-
-    time_spent_in_the_bonds = ((vehicle_length * 1000000)/ speed_in_meters_per_second) + time_in_loop;
-    /* Area dos calculos*/
-
-    transit_state(time_between_loops, time_in_loop, gap_traffic, time_spent_in_the_bonds);
-
-}
-
-void transit_state(uint16_t time_between_loops_t, uint16_t time_in_loop_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t)
-{
-    static uint16_t count_loop_1 = 0; 
-
-    count_loop_1++;
-
-    if (count_loop_1 <= gap) {
-        current_status(INITIAL_TRANSIT_GAP) ; // off off
+    if(counter == 0)
+    {
+        hmi_led_turn_on(0);
     }
-    else if (count_loop_1 <= (gap + time_between_loops_t)) {
-        current_status (INPUT_LOOP_ACTIVATION); // on off
+    if(counter  == 200)
+    {
+        hmi_led_turn_on(1);
+        counter = 0;
     }
-    else if (count_loop_1 <= (gap + time_between_loops_t + time_in_loop_t)) {
-        current_status (OUTPUT_LOOP_ACTIVATION); // on on
-    }
-    else if (count_loop_1 <= (gap + (2 * time_between_loops_t) + time_in_loop_t)) {
-        current_status (OUTPUT_LOOP_ACTIVATION); // on on
-    }
-    else if (count_loop_1 <= (gap + (3 * time_between_loops_t) + time_in_loop_t)) {
-        current_status (INPUT_LOOP_DISABLED); // on on
-    }
-    else{
-        count_loop_1 = 0;
-        current_status (OUTPUT_LOOP_DISABLED); // off off
-    }
-}
 
-void current_status(traffic_status_t state)
-{
+    counter++;
+    
 
-    switch (state) {
-        case INITIAL_TRANSIT_GAP:
-            hmi_led_turn_off(0);
-            loop_turn_off(0);
 
-            hmi_led_turn_off(2);
-            loop_turn_off(1);
-            break;
 
-        case INPUT_LOOP_ACTIVATION:
-            hmi_led_turn_on(0);
-            loop_turn_on(0);
-
-            hmi_led_turn_off(2);
-            loop_turn_off(1);
-            break;
-
-        case OUTPUT_LOOP_ACTIVATION:
-            hmi_led_turn_on(0);
-            loop_turn_on(0);
-
-            hmi_led_turn_on(2);
-            loop_turn_on(1);
-            break;
-
-        case INPUT_LOOP_DISABLED:
-            hmi_led_turn_off(0);
-            loop_turn_off(0);
-
-            hmi_led_turn_on(2);
-            loop_turn_on(1);
-            break;
-
-        case OUTPUT_LOOP_DISABLED:
-            hmi_led_turn_off(0);
-            loop_turn_off(0);
-
-            hmi_led_turn_off(2);
-            loop_turn_off(1);
-            break;
-
-        default:
-            break;
-    }
 }
 
 void update_state_loop(void)
@@ -171,20 +98,21 @@ void app_read_address_and_mode(void)
 
 void app_1ms_clock(void)
 {
-    traffic_calculation_app();
+  
 }
 
 /******************************************************************************/
 
 void app_init(void)
 {
+         
 }
 
 /******************************************************************************/
 
 void app_update(void)
 {
-    
+
 }
 
 /******************************************************************************/

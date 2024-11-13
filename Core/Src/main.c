@@ -179,7 +179,7 @@ static void MX_TIM6_Init(void)
   /* USER CODE END TIM6_Init 1 */
   TIM_InitStruct.Prescaler = 47-1;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 10;
+  TIM_InitStruct.Autoreload = 100;
   LL_TIM_Init(TIM6, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM6);
   /* USER CODE BEGIN TIM6_Init 2 */
