@@ -20,49 +20,151 @@ volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
-uint32_t sequency[6][18] = {0};
+static uint32_t ticks = 0;
+static piezo_pulse_t piezo_pulse;
 
-#define LOOP_ENTER_CH0          0
-#define LOOP_EXIT_CH0           1
-
-#define PIEZO_ENTER_CH0         2 
+static traffic_axles_t traffic_axles;
 
 
 void app_1us_clock() /*10uS*/
 {
-
+    
+    
 }
 
-traffic_t traffic;
+/******************************************************************************/
 
 
-uint8_t loop_update_state(lane_t lane, uint16_t velocity_ms, uint16_t weight_ms)
+
+/******************************************************************************/
+
+
+
+void app_1ms_clock(void)
 {
-    switch (traffic.lane_loop[lane].state)
-    {
-    case LANE_LOOP_INIT:
-       
-       traffic.lane_loop[lane].state = LANE_LOOP_START;
-        break;
-    case LANE_LOOP_START:
+    uint8_t lane_index = 0;
 
+    static uint8_t flag = 0;
+
+    if(flag == 0)
+    {
+        traffic_axles.lane[lane_index].next_axle = 0;
+        flag = 1;
+    }
+
+    static uint32_t counter1 = 0;
+    static uint32_t counter2 = 0;
+    uint32_t counter3 = 0;
+    uint32_t counter4 = 0;
+
+    counter1++;
+    counter2++;
+    switch (traffic_axles.lane[lane_index].next_axle)
+    {
+    case AXLE_1:
+        
+        if(counter1 == 10)
+        {   
+            //traffic_axles.lane[lane_index].next_axle = AXLE_2;
+            hmi_led_turn_on(0);
+            hmi_led_turn_off(0);
+            
+            //counter1 = 0;
+        }  
+
+        
+        else if(counter1 == 60)
+        {
+            hmi_led_turn_on(0);
+            hmi_led_turn_off(0);
+            //traffic_axles.lane[lane_index].next_axle = 2;
+            //counter2 = 0;
+        }  
+
+        //counter3++;           
+        else if(counter1 == 80)
+        {
+            hmi_led_turn_on(0);
+            hmi_led_turn_off(0);
+            //traffic_axles.lane[lane_index].next_axle = 6;
+            counter1 = 0;
+            return 0;
+        }
+        else
+        {
+            
+        } 
+
+        
+
+        break;
+    case AXLE_2:
+
+
+        break;
+    case AXLE_3:
+
+        break;
+    case AXLE_4:
+
+
+        //traffic_axles.lane[lane_index].next_axle = AXLE_5;
+        break; 
+    case AXLE_5:
+
+        traffic_axles.lane[lane_index].next_axle = AXLE_6;
+        break;
+    case AXLE_6:
+
+        traffic_axles.lane[lane_index].next_axle = AXLE_7;
+        break;
+    case AXLE_7:
+
+        traffic_axles.lane[lane_index].next_axle = AXLE_8;
+        break;
+    case AXLE_8:
+
+        traffic_axles.lane[lane_index].next_axle = AXLE_9;
+        break;
+    case AXLE_9:
+
+        traffic_axles.lane[lane_index].next_axle = AXLE_1;
         break;
     default:
         break;
     }
 
+    // //if(piezo_pulse.piezo_pin[0].time > 0 )
+    // {
+    //     piezo_pulse.piezo_pin[0].time --;
+    // }
 }
 
+/******************************************************************************/
 
 
+void piezo_pulse_update_state(uint8_t piezo_index, uint32_t time_turn_on)
+{   
+    switch (piezo_pulse.piezo_pin[piezo_index].state)
+    {
+    case PIEZO_TURN_ON:
+        hmi_led_turn_on(piezo_index);
+        piezo_pulse.piezo_pin[piezo_index].state = PIEZO_TURN_OFF;
+        break;
+    case PIEZO_TURN_OFF:
+        hmi_led_turn_off(piezo_index);
+        piezo_pulse.piezo_pin[piezo_index].state = PIEZO_TURN_ON ;
+        return 0;
+        break;
+    default:
+        break;
+    }
+}
 
+void piezo_update_state(lane_t lane_index, traffic_axles_t traffic_axles)
+{
 
-
-
-
-
-
-
+}
 
 void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 {
@@ -100,15 +202,12 @@ void app_read_address_and_mode(void)
 
 /******************************************************************************/
 
-void app_1ms_clock(void)
-{
-  
-}
 
 /******************************************************************************/
 
 void app_init(void)
 {
+    piezo_pulse.piezo_pin[3].state = 0;
          
 }
 
@@ -117,6 +216,7 @@ void app_init(void)
 void app_update(void)
 {
 
+        
 }
 
 /******************************************************************************/
