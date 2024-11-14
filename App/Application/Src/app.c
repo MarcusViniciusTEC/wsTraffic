@@ -106,7 +106,7 @@ void traffic_calculation_app(void)
     
     if(traffic_loop[GROUP_LOOP_INDEX_2].state_group_loop == GROUP_ACTIVE)
     {
-        transit_state_group_loop_2(calc_group_loop[GROUP_LOOP_INDEX_2].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_2].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_2].time_spent_in_the_bonds);
+       transit_state_group_loop_2(calc_group_loop[GROUP_LOOP_INDEX_2].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_2].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_2].time_spent_in_the_bonds);
     }
 
 }

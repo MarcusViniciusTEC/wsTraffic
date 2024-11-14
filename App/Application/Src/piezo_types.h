@@ -36,7 +36,7 @@ typedef enum
   AXLE_6,
   AXLE_7,
   AXLE_8,
-  ALXE_9,
+  AXLE_9,
   NUMBER_OF_AXLES
 }axle_types_t;
 
@@ -54,10 +54,8 @@ typedef enum
 }vehicle_states_t;
 
 typedef struct 
-{
-    
-    uint32_t      delay_time;  
-    uint8_t       piezo_index;    
+{   uint8_t       piezo_index;
+    uint32_t      delay_time;   
     axle_state_t  state;       
 } axle_t;
 
