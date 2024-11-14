@@ -7,45 +7,35 @@
 #include "hmi.h"
 #include "loop.h"
 #include "piezo.h"
+#include "loop_types.h"
 // #include "wlog.h"
 
 /******************************************************************************/
 
 // #include "gpio.h"
 
+#include <stdint.h>
+
+#define DELAY_BETWEEN_CARS 1000 // 1000ms de espera entre carros
+
 /******************************************************************************/
 
 volatile uint32_t app_execution_rate_1ms_timer;
 
-uint32_t input_loop_gap = 0;        //ms
-uint32_t output_loop_gap = 0;
-uint32_t entry_loop_stay_time = 0;
-uint32_t exit_loop_stay_time = 0;
-
-uint16_t speed_traffic = 0;        //Km/h
-uint8_t vehicle_length = 0;
-uint16_t gap_traffic = 0;
+static traffic_loop_t traffic_loop[1];
+static calc_group_loop_t calc_group_loop[2];
 
 /******************************************************************************/
 
-#include <stdint.h>
-
-#define DELAY_BETWEEN_CARS 1000  // 1000ms de espera entre carros
 
 
-
-
-
-         
-uint32_t car_delay_timer = 0;  
-uint8_t current_car = 0; 
+uint32_t car_delay_timer = 0;
+uint8_t current_car = 0;
 traffic_t traffic[1];
-axle_t axles[9];         
+axle_t axles[9];
 
-void init_axles(void) 
+void init_axles(void)
 {
-    
-     
 
     traffic[0].axles = axles;
     traffic[0].num_axles = 3;
@@ -53,41 +43,36 @@ void init_axles(void)
     traffic[0].axles[1].delay_time = 15;
     traffic[0].axles[2].delay_time = 25;
 
-    for (int i = 0; i < traffic[current_car].num_axles; i++) 
+    for (int i = 0; i < traffic[current_car].num_axles; i++)
     {
         traffic[current_car].axles[i].active = 1;
     }
 }
 
+void app_1ms_clock(void)
+{
 
-void app_1ms_clock(void) {
-    
     static uint32_t timer = 0;
 
-    for (uint8_t i = 0; i < traffic[current_car].num_axles; i++) 
+    for (uint8_t i = 0; i < traffic[current_car].num_axles; i++)
     {
-        if (traffic[current_car].axles[i].active && timer == traffic[current_car].axles[i].delay_time) 
+        if (traffic[current_car].axles[i].active && timer == traffic[current_car].axles[i].delay_time)
         {
             hmi_led_turn_on(traffic[current_car].axles[i].led_index);
             hmi_led_turn_off(traffic[current_car].axles[i].led_index);
-            traffic[current_car].axles[i].active = 0;  
+            traffic[current_car].axles[i].active = 0;
         }
     }
 
     timer++;
 }
 
-
 void app_1us_clock() /*10uS*/
 {
-
-
-
 }
 
 void update_state_loop(void)
 {
-
 }
 void app_set_address_and_mode(uint8_t addres, uint8_t mode)
 {
@@ -124,53 +109,64 @@ void app_read_address_and_mode(void)
 
 /******************************************************************************/
 
-
 /******************************************************************************/
-
 
 /******************************************************************************/
 // AlissonGOE
 
 void traffic_calculation_app(void)
 {
-    static uint32_t speed_in_meters_per_second = 0;
-    static uint32_t time_in_loop = 0;
-    static uint32_t time_between_loops = 0;
-    static uint32_t time_spent_in_the_bonds = 0;
+    traffic_loop[GROUP_LOOP_INDEX_1].gap_traffic = 1000;
+    traffic_loop[GROUP_LOOP_INDEX_1].speed_traffic = 120;
+    traffic_loop[GROUP_LOOP_INDEX_1].vehicle_length = 4;
+    traffic_loop[GROUP_LOOP_INDEX_1].state_group_loop = GROUP_ACTIVE;
 
-    speed_traffic = 80;
-    vehicle_length = 22;
-    gap_traffic = 3000;
+    traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic = 1000;
+    traffic_loop[GROUP_LOOP_INDEX_2].speed_traffic = 80;
+    traffic_loop[GROUP_LOOP_INDEX_2].vehicle_length = 22;
+    traffic_loop[GROUP_LOOP_INDEX_2].state_group_loop = GROUP_ACTIVE;
 
-    /* Area dos calculos*/
-    speed_in_meters_per_second = ((speed_traffic * 1000)/ 3.6);
+    
+    for (uint8_t calc_index = 0; calc_index < NUMBER_OF_GROUPS_INDEX; calc_index++)
+    {
+        calc_group_loop[calc_index].speed_in_meters_per_second = (traffic_loop[calc_index].speed_traffic * 1000) / 3.6;
 
-    time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) / speed_in_meters_per_second);
+        calc_group_loop[calc_index].time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000)
+        / calc_group_loop[calc_index].speed_in_meters_per_second);
 
-    time_in_loop = ((LENGHT_LOOP_MTS * 1000000) / speed_in_meters_per_second);
+        calc_group_loop[calc_index].time_in_loop = ((LENGHT_LOOP_MTS * 1000000) / calc_group_loop[calc_index].speed_in_meters_per_second);
 
-    time_spent_in_the_bonds = ((vehicle_length * 1000000)/ speed_in_meters_per_second) + time_in_loop;
-    /* Area dos calculos*/
+        calc_group_loop[calc_index].time_spent_in_the_bonds = ((traffic_loop[calc_index].vehicle_length * 1000000)
+        / calc_group_loop[calc_index].speed_in_meters_per_second) + calc_group_loop[calc_index].time_in_loop;
 
-    transit_state(time_between_loops, time_in_loop, gap_traffic, time_spent_in_the_bonds);
+    }
+
+    if(traffic_loop[GROUP_LOOP_INDEX_1].state_group_loop == GROUP_ACTIVE)
+    {
+        transit_state_group_loop_1(calc_group_loop[GROUP_LOOP_INDEX_1].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_1].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_1].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_1].time_spent_in_the_bonds);
+    }
+    
+    if(traffic_loop[GROUP_LOOP_INDEX_2].state_group_loop == GROUP_ACTIVE)
+    {
+        transit_state_group_loop_2(calc_group_loop[GROUP_LOOP_INDEX_2].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_2].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_2].time_spent_in_the_bonds);
+    }
+
 }
 
 // AlissonGOE
 /******************************************************************************/
 
-
 /******************************************************************************/
 
 void app_init(void)
 {
-    init_axles();
+    //init_axles();
 }
 
 /******************************************************************************/
 
 void app_update(void)
 {
-
 }
 
 /******************************************************************************/

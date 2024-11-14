@@ -3,18 +3,18 @@
 
 #include "loop_cfg.h"
 
-#define LOOP_LED_LOOP_0                         0
-#define LOOP_LED_LOOP_1                         2
-#define LOOP_LED_LOOP_2                         3
-#define LOOP_LED_LOOP_3                         5
+#define LOOP_LED_LOOP_0 0
+#define LOOP_LED_LOOP_1 2
+#define LOOP_LED_LOOP_2 3
+#define LOOP_LED_LOOP_3 5
 
-#define DISTANCE_BETWEEN_LOOPS_MTS              1
-#define LENGHT_LOOP_MTS                         2
+#define DISTANCE_BETWEEN_LOOPS_MTS 1
+#define LENGHT_LOOP_MTS 2
 
 typedef struct
 {
   GPIO_TypeDef *GPIO;
-      uint32_t  PinMask;
+  uint32_t PinMask;
 } loop_pininfo_t;
 
 typedef enum
@@ -24,6 +24,36 @@ typedef enum
   OUTPUT_LOOP_ACTIVATION,
   INPUT_LOOP_DISABLED,
   OUTPUT_LOOP_DISABLED
-}traffic_status_t;
+} traffic_status_t;
+
+typedef enum
+{
+  GROUP_ACTIVE = 0,
+  GROUP_DISABLED
+} state_group_t;
+
+typedef enum
+{
+  GROUP_LOOP_INDEX_1 = 0,
+  GROUP_LOOP_INDEX_2,
+  NUMBER_OF_GROUPS_INDEX
+} group_loop_index;
+
+typedef struct
+{
+  uint32_t speed_traffic;
+  uint8_t vehicle_length;
+  uint16_t gap_traffic;
+  state_group_t state_group_loop;
+
+} traffic_loop_t;
+
+typedef struct 
+{
+  uint32_t speed_in_meters_per_second;
+  uint32_t time_in_loop;
+  uint32_t time_between_loops;
+  uint32_t time_spent_in_the_bonds;
+} calc_group_loop_t;
 
 #endif
