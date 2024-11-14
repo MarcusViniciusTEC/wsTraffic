@@ -25,6 +25,7 @@
 
 #include "sl.h"
 #include "app.h"
+#include "hmi.h"
 
 /* USER CODE END Includes */
 
@@ -93,6 +94,7 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    hmi_led_turn_on(5);
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }

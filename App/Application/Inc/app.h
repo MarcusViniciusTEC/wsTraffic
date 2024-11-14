@@ -20,8 +20,6 @@ extern volatile uint32_t app_execution_rate_1ms_timer;
 /******************************************************************************/
 // AlissonGOE
 
-void transit_state(uint16_t time_between_loops_t, uint16_t time_in_loop_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t);
-void current_status(traffic_status_t state);
 void traffic_calculation_app(void);
 
 // AlissonGOE
