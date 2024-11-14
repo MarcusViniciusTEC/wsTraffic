@@ -16,8 +16,6 @@
 
 #include <stdint.h>
 
-#define DELAY_BETWEEN_CARS 1000 // 1000ms de espera entre carros
-
 /******************************************************************************/
 
 volatile uint32_t app_execution_rate_1ms_timer;
@@ -27,68 +25,15 @@ static calc_group_loop_t calc_group_loop[2];
 
 /******************************************************************************/
 
-#include <stdint.h>
-
-#define DELAY_BETWEEN_CARS 1000  // 1000ms de espera entre carros
-
-
-
-
-
-         
-uint32_t car_delay_timer = 0;  
-uint8_t current_car = 0; 
-traffic_t traffic[1];
-axle_t axles[9];         
-
-void init_axles(void) 
-{
-    
-     
-
-    traffic[0].axles = axles;
-    traffic[0].num_axles = 3;
-    traffic[0].axles[0].delay_time = 1;
-    traffic[0].axles[1].delay_time = 15;
-    traffic[0].axles[2].delay_time = 25;
-
-    for (int i = 0; i < traffic[current_car].num_axles; i++) 
-    {
-        traffic[current_car].axles[i].active = 1;
-    }
-}
-
-
-void app_1ms_clock(void) {
-
-    static uint32_t timer = 0;
-
-    for (uint8_t i = 0; i < traffic[current_car].num_axles; i++) 
-    {
-        if (traffic[current_car].axles[i].active && timer == traffic[current_car].axles[i].delay_time) 
-        {
-            hmi_led_turn_on(traffic[current_car].axles[i].led_index);
-            hmi_led_turn_off(traffic[current_car].axles[i].led_index);
-            traffic[current_car].axles[i].active = 0;  
-        }
-    }
-
-    timer++;
-}
-
-
-void app_1us_clock() /*10uS*/
+void app_1ms_clock(void)
 {
 
 
-
 }
 
-void update_state_loop(void)
-{
-}
 void app_set_address_and_mode(uint8_t addres, uint8_t mode)
 {
+
 }
 
 /******************************************************************************/
