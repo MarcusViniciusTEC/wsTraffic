@@ -84,8 +84,9 @@ void traffic_calculation_app(void)
     traffic_loop[GROUP_2].vehicle_length = 22;
     traffic_loop[GROUP_2].state_group_loop = GROUP_ACTIVE;
 
+    static uint8_t calc_index = 0;
     
-    for (uint8_t calc_index = 0; calc_index < NUMBER_OF_GROUPS_INDEX; calc_index++)
+    for (calc_index; calc_index < NUMBER_OF_GROUPS_INDEX; calc_index++)
     {
         calc_group_loop[calc_index].speed_in_meters_per_second = (traffic_loop[calc_index].speed_traffic * 1000) / 3.6;
 

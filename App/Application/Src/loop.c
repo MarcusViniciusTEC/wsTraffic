@@ -56,7 +56,7 @@ void transit_state_group_loop_1(uint32_t time_between_loops_t, uint32_t time_in_
   }
   else if (count_loop_1 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
   {
-    current_status_group_loop_1(INPUT_LOOP_DISABLED); // on on
+    current_status_group_loop_1(INPUT_LOOP_DISABLED); // off on
   }
   else
   {
@@ -85,7 +85,7 @@ void transit_state_group_loop_2(uint32_t time_between_loops_t, uint32_t time_in_
   }
   else if (count_loop_2 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
   {
-    current_status_group_loop_2(INPUT_LOOP_DISABLED); // on on
+    current_status_group_loop_2(INPUT_LOOP_DISABLED); // off on
   }
   else
   {

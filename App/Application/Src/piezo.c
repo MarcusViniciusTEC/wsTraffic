@@ -85,9 +85,9 @@ void traffic_delay(uint32_t time_us)
 
 static void piezo_led_pulse (uint8_t led_index, uint32_t time_us)
 {
-    hmi_led_turn_on(led_index);
+    hmi_led_turn_on(led_index + 1);
     for(uint32_t i = 0 ; i < time_us; i++);
-    hmi_led_turn_off(led_index);
+    hmi_led_turn_off(led_index + 1);
 }
 
 /******************************************************************************/
@@ -146,7 +146,7 @@ void piezo_update_state(void)
 
 void piezo_1ms_clock(void)
 {
-    piezo_update_state();
+    //piezo_update_state();
     //tick_1ms();
 }
 
