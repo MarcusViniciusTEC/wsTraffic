@@ -23,18 +23,6 @@ typedef enum
 }traffic_mode_t;
 
 
-typedef struct 
-{
-    uint32_t delay_time;  
-    uint8_t led_index;    
-    uint8_t active;       
-} axle_t;
-
-
-typedef struct {
-    axle_t* axles;       
-    uint8_t num_axles;    
-} traffic_t;
 
 
 typedef enum
