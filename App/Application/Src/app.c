@@ -75,12 +75,12 @@ void app_read_address_and_mode(void)
 void traffic_calculation_app(void)
 {
     traffic_loop[GROUP_1].gap_traffic = 1000;
-    traffic_loop[GROUP_1].speed_traffic = 120;
-    traffic_loop[GROUP_1].vehicle_length = 4;
+    traffic_loop[GROUP_1].speed_traffic = 50;
+    traffic_loop[GROUP_1].vehicle_length = 6;
     traffic_loop[GROUP_1].state_group_loop = GROUP_ACTIVE;
 
     traffic_loop[GROUP_2].gap_traffic = 1000;
-    traffic_loop[GROUP_2].speed_traffic = 80;
+    traffic_loop[GROUP_2].speed_traffic = 50;
     traffic_loop[GROUP_2].vehicle_length = 22;
     traffic_loop[GROUP_2].state_group_loop = GROUP_ACTIVE;
 
