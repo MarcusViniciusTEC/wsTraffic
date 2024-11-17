@@ -43,7 +43,7 @@ typedef struct
 {
   uint32_t speed_traffic;
   uint8_t vehicle_length;
-  uint16_t gap_traffic;
+  uint16_t gap_traffic_in_second;
   state_group_t state_group_loop;
 
 } traffic_loop_t;
@@ -53,7 +53,8 @@ typedef struct
   uint32_t speed_in_meters_per_second;
   uint32_t time_in_loop;
   uint32_t time_between_loops;
-  uint32_t time_spent_in_the_bonds;
+  uint32_t time_spent_in_the_loops;
+  uint16_t time_gap_in_ms;
 } calc_group_loop_t;
 
 #endif
