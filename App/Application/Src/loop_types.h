@@ -68,7 +68,7 @@ typedef struct
 
 typedef enum
 {
-  VEHICLES_CLASS_2CC = 0,  // 2 AXLES
+  VEHICLES_CLASS_2C = 0,  // 2 AXLES
   VEHICLES_CLASS_3C,       // 3 AXLES
   VEHICLES_CLASS_4C,       // 4 AXLES
   VEHICLES_CLASS_2S3,      // 5 AXLES

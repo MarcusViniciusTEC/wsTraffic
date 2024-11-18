@@ -47,7 +47,7 @@ traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint3
   {
     current_status_group_loop_1(INITIAL_TRANSIT_GAP); // off off
   }
-  else if (count_loop_1 <= (gap + time_between_loops_t))
+  else if (count_loop_1 <= (gap + time_in_loop_t))
   {
     current_status_group_loop_1(INPUT_LOOP_ACTIVATION); // on off
   }
