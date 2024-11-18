@@ -25,7 +25,6 @@ typedef struct
       uint32_t  PinMask;
 } piezo_pininfo_t;
 
-
 typedef enum
 {
   AXLE_1 = 0U,
@@ -54,11 +53,11 @@ typedef enum
 }vehicle_states_t;
 
 typedef struct 
-{   uint8_t       piezo_index;
-    uint32_t      delay_time;   
+{
+    uint32_t      delay_time;  
+    uint8_t       piezo_index;    
     axle_state_t  state;       
 } axle_t;
-
 
 typedef struct 
 {
@@ -67,7 +66,6 @@ typedef struct
     uint32_t  weight_ms; 
     vehicle_states_t vehicle_state
 } traffic_t;
-
 
 
 

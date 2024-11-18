@@ -75,59 +75,59 @@ void app_read_address_and_mode(void)
 void traffic_calculation_app(void)
 {
 
-    static uint8_t calc_group_index = 0;
-    static uint8_t calc_vehicle_index = 0;
+    // static uint8_t calc_group_index = 0;
+    // static uint8_t calc_vehicle_index = 0;
 
-    calc_group_loop[GROUP_1].calc_vehicle[VEHICLES_CLASS_2CC].time_between_loops;
+    // calc_group_loop[GROUP_1].calc_vehicle[VEHICLES_CLASS_2CC].time_between_loops;
 
-    for (calc_group_index; calc_group_index < NUMBER_OF_GROUPS_INDEX; calc_group_index++)
-    {
-        for (calc_vehicle_index; calc_vehicle_index < NUMBER_OF_VEHICLES_INDEX; calc_vehicle_index++)
-        {
-            calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_gap_in_ms = group_loop[calc_group_index].vehicle[calc_vehicle_index].gap_traffic_in_second * 1000;
+    // for (calc_group_index; calc_group_index < NUMBER_OF_GROUPS_INDEX; calc_group_index++)
+    // {
+    //     for (calc_vehicle_index; calc_vehicle_index < NUMBER_OF_VEHICLES_INDEX; calc_vehicle_index++)
+    //     {
+    //         calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_gap_in_ms = group_loop[calc_group_index].vehicle[calc_vehicle_index].gap_traffic_in_second * 1000;
 
-            calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second = (group_loop[calc_group_index].vehicle[calc_vehicle_index].speed_traffic * 1000) / 3.6;
+    //         calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second = (group_loop[calc_group_index].vehicle[calc_vehicle_index].speed_traffic * 1000) / 3.6;
 
-            calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) 
-            / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second);
+    //         calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) 
+    //         / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second);
 
-            calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_in_loop = ((LENGHT_LOOP_MTS * 1000000) 
-            / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second);
+    //         calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_in_loop = ((LENGHT_LOOP_MTS * 1000000) 
+    //         / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second);
 
-            calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_spent_in_the_loops = ((group_loop[calc_group_index].vehicle[calc_vehicle_index].vehicle_length * 1000000) 
-            / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second) + calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_in_loop;
-        }
-    }
+    //         calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_spent_in_the_loops = ((group_loop[calc_group_index].vehicle[calc_vehicle_index].vehicle_length * 1000000) 
+    //         / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second) + calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_in_loop;
+    //     }
+    // }
 
-    if (group_loop[GROUP_1].state_group_loop == GROUP_ACTIVE)
-    {
-        traffic_status_t return_transit_state_group_1;
-        static uint8_t calc_vehicle_index_group_1 = 0;
+    // if (group_loop[GROUP_1].state_group_loop == GROUP_ACTIVE)
+    // {
+    //     traffic_status_t return_transit_state_group_1;
+    //     static uint8_t calc_vehicle_index_group_1 = 0;
 
-        return_transit_state_group_1 = transit_state_group_loop_1(
-        calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_between_loops,
-        calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_in_loop,
-        calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_gap_in_ms,
-        calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_spent_in_the_loops);
-        if(return_transit_state_group_1 == OUTPUT_LOOP_DISABLED)
-        {
-            calc_vehicle_index_group_1++;
-            if (calc_vehicle_index_group_1 >= 11) 
-            { 
-                calc_vehicle_index_group_1 = 0; 
-            }
-        }
-    }
+    //     return_transit_state_group_1 = transit_state_group_loop_1(
+    //     calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_between_loops,
+    //     calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_in_loop,
+    //     calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_gap_in_ms,
+    //     calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_spent_in_the_loops);
+    //     if(return_transit_state_group_1 == OUTPUT_LOOP_DISABLED)
+    //     {
+    //         calc_vehicle_index_group_1++;
+    //         if (calc_vehicle_index_group_1 >= 11) 
+    //         { 
+    //             calc_vehicle_index_group_1 = 0; 
+    //         }
+    //     }
+    // }
 
-    if (group_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
-    {
-        transit_state_group_loop_1(calc_group_loop[GROUP_1].time_between_loops, calc_group_loop[GROUP_1].time_in_loop, traffic_loop[GROUP_1].gap_traffic, calc_group_loop[GROUP_1].time_spent_in_the_bonds);
-    }
+    // if (group_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
+    // {
+    //    // transit_state_group_loop_1(calc_group_loop[GROUP_1].time_between_loops, calc_group_loop[GROUP_1].time_in_loop, traffic_loop[GROUP_1].gap_traffic, calc_group_loop[GROUP_1].time_spent_in_the_bonds);
+    // }
     
-    if(traffic_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
-    {
-        transit_state_group_loop_2(calc_group_loop[GROUP_2].time_between_loops, calc_group_loop[GROUP_2].time_in_loop, traffic_loop[GROUP_2].gap_traffic, calc_group_loop[GROUP_2].time_spent_in_the_bonds);
-    }
+    // if(traffic_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
+    // {
+    //    // transit_state_group_loop_2(calc_group_loop[GROUP_2].time_between_loops, calc_group_loop[GROUP_2].time_in_loop, traffic_loop[GROUP_2].gap_traffic, calc_group_loop[GROUP_2].time_spent_in_the_bonds);
+    // }
 
 }
 
