@@ -123,123 +123,14 @@ void traffic_calculation_app(void)
 
     if (group_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
     {
-        traffic_status_t return_transit_state_group_2;
-        static uint8_t calc_vehicle_index_group_2 = 0;
-
-        return_transit_state_group_2 = transit_state_group_loop_2(calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_between_loops,
-        calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_in_loop,
-        calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_gap_in_ms,
-        calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_spent_in_the_loops);
-        if(return_transit_state_group_2 == OUTPUT_LOOP_DISABLED)
-        {
-            calc_vehicle_index_group_2++;
-        }
+        transit_state_group_loop_1(calc_group_loop[GROUP_1].time_between_loops, calc_group_loop[GROUP_1].time_in_loop, traffic_loop[GROUP_1].gap_traffic, calc_group_loop[GROUP_1].time_spent_in_the_bonds);
     }
-}
+    
+    if(traffic_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
+    {
+        transit_state_group_loop_2(calc_group_loop[GROUP_2].time_between_loops, calc_group_loop[GROUP_2].time_in_loop, traffic_loop[GROUP_2].gap_traffic, calc_group_loop[GROUP_2].time_spent_in_the_bonds);
+    }
 
-void value_traffic(void)
-{
-    group_loop[GROUP_1].state_group_loop = GROUP_ACTIVE;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].vehicle_length = 4;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C].vehicle_length = 7;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_4C].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_4C].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_4C].vehicle_length = 5;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2S3].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2S3].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2S3].vehicle_length = 10;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3S3].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3S3].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3S3].vehicle_length = 15;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2CC].vehicle_length = 20;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D3].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D3].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D3].vehicle_length = 25;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C2].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C2].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3C2].vehicle_length = 22;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2J4].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2J4].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2J4].vehicle_length = 30;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2D4].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2D4].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2D4].vehicle_length = 28;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_35D].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_35D].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_35D].vehicle_length = 25;
-
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].gap_traffic_in_second = 1;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].speed_traffic = 50;
-    group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].vehicle_length = 32;
-
-    // 2 group loopss
-
-    group_loop[GROUP_2].state_group_loop = GROUP_ACTIVE;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].vehicle_length = 4;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C].vehicle_length = 7;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_4C].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_4C].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_4C].vehicle_length = 5;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2S3].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2S3].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2S3].vehicle_length = 10;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3S3].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3S3].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3S3].vehicle_length = 15;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2CC].vehicle_length = 20;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D3].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D3].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D3].vehicle_length = 25;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C2].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C2].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3C2].vehicle_length = 22;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2J4].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2J4].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2J4].vehicle_length = 30;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2D4].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2D4].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2D4].vehicle_length = 28;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_35D].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_35D].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_35D].vehicle_length = 25;
-
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D6].gap_traffic_in_second = 1;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D6].speed_traffic = 50;
-    group_loop[GROUP_2].vehicle[VEHICLES_CLASS_3D6].vehicle_length = 32;
 }
 
 // AlissonGOE
