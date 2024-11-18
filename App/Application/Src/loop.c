@@ -36,108 +36,115 @@ void loop_turn_off(uint8_t index)
 /******************************************************************************/
 // AlissonGOE
 
-traffic_status_t transit_state_group_loop_1(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t)
+traffic_status_t transit_state_group_loop_1(uint16_t time_between_loops_t, uint16_t gap_t, uint16_t time_spent_in_the_bonds_t, uint8_t group_index)
 {
-  static uint16_t count_loop_1 = 0;
+  uint16_t time_between_loop[2];
+  uint16_t gap[2];
+  uint16_t time_spent_in_the_bonds[2];
+  static uint32_t count_loop_1[2] = {0,0};
 
-  count_loop_1++;
-
-  if (count_loop_1 <= gap)
+  time_between_loop[group_index] = time_between_loops_t;
+  gap[group_index] = gap_t;
+  time_spent_in_the_bonds[group_index] = time_spent_in_the_bonds_t;
+  count_loop_1[group_index]++;
+  
+  if (count_loop_1[group_index] <= gap[group_index])
   {
-    current_status_group_loop_1(INITIAL_TRANSIT_GAP); // off off
+    current_status_group_loop_1(INITIAL_TRANSIT_GAP, group_index); // off off
+    return INITIAL_TRANSIT_GAP;
   }
-  else if (count_loop_1 <= (gap + time_between_loops_t))
+  else if (count_loop_1[group_index] <= (gap[group_index] + time_between_loop[group_index]))
   {
-    current_status_group_loop_1(INPUT_LOOP_ACTIVATION); // on off
+    current_status_group_loop_1(INPUT_LOOP_ACTIVATION, group_index); // on off
+    return INPUT_LOOP_ACTIVATION;
   }
-  else if (count_loop_1 <= (gap + time_spent_in_the_bonds_t))
+  else if (count_loop_1[group_index] <= (gap[group_index] + time_spent_in_the_bonds[group_index]))
   {
-    current_status_group_loop_1(OUTPUT_LOOP_ACTIVATION); // on on
+    current_status_group_loop_1(OUTPUT_LOOP_ACTIVATION, group_index); // on on
+    return OUTPUT_LOOP_ACTIVATION;
   }
-  else if (count_loop_1 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
+  else if (count_loop_1[group_index] <= (gap[group_index] + time_spent_in_the_bonds[group_index] + time_between_loop[group_index]))
   {
-    current_status_group_loop_1(INPUT_LOOP_DISABLED); // off on
+    current_status_group_loop_1(INPUT_LOOP_DISABLED, group_index); // off on
+    return INPUT_LOOP_DISABLED;
   }
   else
   {
-    count_loop_1 = 0;
-    current_status_group_loop_1(OUTPUT_LOOP_DISABLED); // off off
+    count_loop_1[group_index] = 0;
+    time_between_loop[group_index] = 0;
+    gap[group_index] = 0;
+    time_spent_in_the_bonds[group_index] = 0;
+    current_status_group_loop_1(OUTPUT_LOOP_DISABLED, group_index); // off off
     return OUTPUT_LOOP_DISABLED;
   }
+  
 }
 
-traffic_status_t transit_state_group_loop_2(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t)
+void current_status_group_loop_1(traffic_status_t state, uint8_t group_index)
 {
-  static uint16_t count_loop_2 = 0;
 
-  count_loop_2++;
+  uint8_t led_input;
+  uint8_t led_output;
+  uint8_t loop_input;
+  uint8_t loop_output;
 
-  if (count_loop_2 <= gap)
+  if(group_index == GROUP_1)
   {
-    current_status_group_loop_2(INITIAL_TRANSIT_GAP); // off off
-  }
-  else if (count_loop_2 <= (gap + (time_between_loops_t)))
-  {
-    current_status_group_loop_2(INPUT_LOOP_ACTIVATION); // on off
-  }
-  else if (count_loop_2 <= (gap + time_spent_in_the_bonds_t))
-  {
-    current_status_group_loop_2(OUTPUT_LOOP_ACTIVATION); // on on
-  }
-  else if (count_loop_2 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
-  {
-    current_status_group_loop_2(INPUT_LOOP_DISABLED); // off on
+    led_input = 0;
+    loop_input = 0;
+
+    led_output = 2;
+    loop_output = 1;
   }
   else
   {
-    count_loop_2 = 0;
-    current_status_group_loop_2(OUTPUT_LOOP_DISABLED); // off off
-    return OUTPUT_LOOP_DISABLED;
-  }
-}
+    led_input = 3;
+    loop_input = 2;
 
-void current_status_group_loop_1(traffic_status_t state)
-{
+    led_output = 5;
+    loop_output = 3;
+  }
+
   switch (state)
   {
   case INITIAL_TRANSIT_GAP:
-    hmi_led_turn_off(0);
-    loop_turn_off(0);
+    hmi_led_turn_off(led_input);
+    loop_turn_off(loop_input);
 
-    hmi_led_turn_off(2);
-    loop_turn_off(1);
+    hmi_led_turn_off(led_output);
+    loop_turn_off(loop_output);
     break;
 
   case INPUT_LOOP_ACTIVATION:
-    hmi_led_turn_on(0);
-    loop_turn_on(0);
+    hmi_led_turn_on(led_input);
+    loop_turn_on(loop_input);
 
-    hmi_led_turn_off(2);
-    loop_turn_off(1);
+    hmi_led_turn_off(led_output);
+    loop_turn_off(loop_output);
     break;
 
   case OUTPUT_LOOP_ACTIVATION:
-    hmi_led_turn_on(0);
-    loop_turn_on(0);
+    hmi_led_turn_on(led_input);
+    loop_turn_on(loop_input);
 
-    hmi_led_turn_on(2);
-    loop_turn_on(1);
+    hmi_led_turn_on(led_output);
+    loop_turn_on(loop_output);
     break;
 
   case INPUT_LOOP_DISABLED:
-    hmi_led_turn_off(0);
-    loop_turn_off(0);
+    hmi_led_turn_off(led_input);
+    loop_turn_off(loop_input);
 
-    hmi_led_turn_on(2);
-    loop_turn_on(1);
+    hmi_led_turn_on(led_output);
+    loop_turn_on(loop_output);
     break;
 
   case OUTPUT_LOOP_DISABLED:
-    hmi_led_turn_off(0);
-    loop_turn_off(0);
+    hmi_led_turn_off(led_input);
+    loop_turn_off(loop_input);
 
-    hmi_led_turn_off(2);
-    loop_turn_off(1);
+    hmi_led_turn_off(led_output);
+    loop_turn_off(loop_output);
     break;
 
   default:
@@ -145,54 +152,6 @@ void current_status_group_loop_1(traffic_status_t state)
   }
 }
 
-void current_status_group_loop_2(traffic_status_t state)
-{
-  switch (state)
-  {
-  case INITIAL_TRANSIT_GAP:
-    hmi_led_turn_off(3);
-    loop_turn_off(2);
-
-    hmi_led_turn_off(5);
-    loop_turn_off(3);
-    break;
-
-  case INPUT_LOOP_ACTIVATION:
-    hmi_led_turn_on(3);
-    loop_turn_on(2);
-
-    hmi_led_turn_off(5);
-    loop_turn_off(3);
-    break;
-
-  case OUTPUT_LOOP_ACTIVATION:
-    hmi_led_turn_on(3);
-    loop_turn_on(2);
-
-    hmi_led_turn_on(5);
-    loop_turn_on(3);
-    break;
-
-  case INPUT_LOOP_DISABLED:
-    hmi_led_turn_off(3);
-    loop_turn_off(2);
-
-    hmi_led_turn_on(5);
-    loop_turn_on(3);
-    break;
-
-  case OUTPUT_LOOP_DISABLED:
-    hmi_led_turn_off(3);
-    loop_turn_off(2);
-
-    hmi_led_turn_off(5);
-    loop_turn_off(3);
-    break;
-
-  default:
-    break;
-  }
-}
 
 // AlissonGOE
 /******************************************************************************/
