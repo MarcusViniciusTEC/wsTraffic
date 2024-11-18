@@ -1,16 +1,24 @@
 {
-    "cmake.configureOnOpen": true,
-    "cmake.additionalCompilerSearchDirs": [
-        "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32",
-        "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin"
-    ],
-    "cmake.buildEnvironment": {
-         "PATH": "C:\\\\Windows\\\\system32;C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin"
-    },
     "files.associations": {
-        "sl.h": "c",
-        "sl_cfg.h": "c",
-        "piezo.h": "c"
-    }
-
+        "stm32f0xx_it.h": "c",
+        "platformsystem.h": "c",
+        "platformwifi.h": "c",
+        "main.h": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "*.tcc": "c",
+        "chrono": "c",
+        "limits": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "cfloat": "c",
+        "stdint.h": "c",
+        "stdio.h": "c"
+    },
+    "cmake.configureOnOpen": true
 }
