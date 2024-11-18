@@ -99,6 +99,8 @@ void traffic_calculation_app(void)
         }
     }
 
+    //teste
+
     if (group_loop[GROUP_1].state_group_loop == GROUP_ACTIVE)
     {
         traffic_status_t return_transit_state_group_1;
