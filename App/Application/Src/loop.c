@@ -36,18 +36,17 @@ void loop_turn_off(uint8_t index)
 /******************************************************************************/
 // AlissonGOE
 
-traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t)
+traffic_status_t transit_state_group_loop_1(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t)
 {
-  static uint32_t count_loop_1 = 0;
+  static uint16_t count_loop_1 = 0;
 
   count_loop_1++;
-
 
   if (count_loop_1 <= gap)
   {
     current_status_group_loop_1(INITIAL_TRANSIT_GAP); // off off
   }
-  else if (count_loop_1 <= (gap + time_in_loop_t))
+  else if (count_loop_1 <= (gap + time_between_loops_t))
   {
     current_status_group_loop_1(INPUT_LOOP_ACTIVATION); // on off
   }
@@ -67,9 +66,9 @@ traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint3
   }
 }
 
-traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t)
+traffic_status_t transit_state_group_loop_2(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t)
 {
-  static uint32_t count_loop_2 = 0;
+  static uint16_t count_loop_2 = 0;
 
   count_loop_2++;
 
@@ -77,7 +76,7 @@ traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint3
   {
     current_status_group_loop_2(INITIAL_TRANSIT_GAP); // off off
   }
-  else if (count_loop_2 <= (gap + time_between_loops_t))
+  else if (count_loop_2 <= (gap + (time_between_loops_t)))
   {
     current_status_group_loop_2(INPUT_LOOP_ACTIVATION); // on off
   }
@@ -96,7 +95,6 @@ traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint3
     return OUTPUT_LOOP_DISABLED;
   }
 }
-
 
 void current_status_group_loop_1(traffic_status_t state)
 {
@@ -212,27 +210,22 @@ void loop_init_apply(void)
 void loop_1ms_clock(void)
 {
 
-  traffic_calculation_app();
-
 }
 
 /******************************************************************************/
 
 void loop_init(void)
 {
-
 }
 
 /******************************************************************************/
 
 void loop_update(void)
 {
-
 }
 
 /******************************************************************************/
 
 void loop_deinit(void)
 {
-
 }

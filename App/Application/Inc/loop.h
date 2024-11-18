@@ -22,8 +22,8 @@ void piezo_turn_off(uint8_t index);
 /******************************************************************************//******************************************************************************/
 // AlissonGOE
 
-traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t);
-traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t);
+traffic_status_t transit_state_group_loop_1(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t);
+traffic_status_t transit_state_group_loop_2(uint16_t time_between_loops_t, uint16_t gap, uint16_t time_spent_in_the_bonds_t);
 void current_status_group_loop_1(traffic_status_t state);
 void current_status_group_loop_2(traffic_status_t state);
 

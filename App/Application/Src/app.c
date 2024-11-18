@@ -70,13 +70,12 @@ void app_read_address_and_mode(void)
 
 void traffic_calculation_app(void)
 {
-    
-
+    value_traffic();
     static calc_status_t state_calc = CALC_ON;
 
     if (state_calc == CALC_ON)
     {
-        value_traffic();
+        
         for (uint8_t calc_group_index = 0; calc_group_index < NUMBER_OF_GROUPS_INDEX; calc_group_index++)
         {
             for (uint8_t calc_vehicle_index = 0; calc_vehicle_index < NUMBER_OF_VEHICLES_INDEX; calc_vehicle_index++)
@@ -92,29 +91,8 @@ void traffic_calculation_app(void)
                 calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_spent_in_the_loops = ((group_loop[calc_group_index].vehicle[calc_vehicle_index].vehicle_length * 1000000) / calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].speed_in_meters_per_second) + calc_group_loop[calc_group_index].calc_vehicle[calc_vehicle_index].time_in_loop;
             }
         }
-        
     }
     state_calc = CALC_OF;
-
-    if (group_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
-    {
-        traffic_status_t return_transit_state_group_2;
-        static uint8_t calc_vehicle_index_group_2 = 0;
-
-        return_transit_state_group_2 = transit_state_group_loop_2(
-            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_between_loops,
-            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_in_loop,
-            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_gap_in_ms,
-            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_spent_in_the_loops);
-        if (return_transit_state_group_2 == OUTPUT_LOOP_DISABLED)
-        {
-            calc_vehicle_index_group_2++;
-            if (calc_vehicle_index_group_2 >= 11)
-            {
-                calc_vehicle_index_group_2 = 0;
-            }
-        }
-    }
 
     if (group_loop[GROUP_1].state_group_loop == GROUP_ACTIVE)
     {
@@ -123,7 +101,6 @@ void traffic_calculation_app(void)
 
         return_transit_state_group_1 = transit_state_group_loop_1(
             calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_between_loops,
-            calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_in_loop,
             calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_gap_in_ms,
             calc_group_loop[GROUP_1].calc_vehicle[calc_vehicle_index_group_1].time_spent_in_the_loops);
         if (return_transit_state_group_1 == OUTPUT_LOOP_DISABLED)
@@ -135,7 +112,26 @@ void traffic_calculation_app(void)
             }
         }
     }
+    if (group_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
+    {
+        traffic_status_t return_transit_state_group_2;
+        static uint8_t calc_vehicle_index_group_2 = 0;
+
+        return_transit_state_group_2 = transit_state_group_loop_2(
+            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_between_loops,
+            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_gap_in_ms,
+            calc_group_loop[GROUP_2].calc_vehicle[calc_vehicle_index_group_2].time_spent_in_the_loops);
+        if (return_transit_state_group_2 == OUTPUT_LOOP_DISABLED)
+        {
+            calc_vehicle_index_group_2++;
+            if (calc_vehicle_index_group_2 >= 11)
+            {
+                calc_vehicle_index_group_2 = 0;
+            }
+        }
+    }
 }
+
 
 void value_traffic(void)
 {
@@ -146,7 +142,7 @@ void value_traffic(void)
     uint8_t speed_loop_2 = 50;
 
     group_loop[GROUP_1].state_group_loop = GROUP_ACTIVE;
-    group_loop[GROUP_2].state_group_loop = GROUP_DISABLED;
+    group_loop[GROUP_2].state_group_loop = GROUP_ACTIVE;
 
     group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2C].gap_traffic_in_second = gap_loop_1;
     group_loop[GROUP_1].vehicle[VEHICLES_CLASS_2C].speed_traffic = speed_loop_1;
@@ -191,6 +187,7 @@ void value_traffic(void)
     group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].gap_traffic_in_second = gap_loop_1;
     group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].speed_traffic = speed_loop_1;
     group_loop[GROUP_1].vehicle[VEHICLES_CLASS_3D6].vehicle_length = 32;
+
 
 
     group_loop[GROUP_2].vehicle[VEHICLES_CLASS_2C].gap_traffic_in_second = gap_loop_2;
