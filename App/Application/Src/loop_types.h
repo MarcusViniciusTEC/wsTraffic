@@ -34,8 +34,8 @@ typedef enum
 
 typedef enum
 {
-  GROUP_LOOP_INDEX_1 = 0,
-  GROUP_LOOP_INDEX_2,
+  GROUP_1 = 0,
+  GROUP_2,
   NUMBER_OF_GROUPS_INDEX
 } group_loop_index;
 

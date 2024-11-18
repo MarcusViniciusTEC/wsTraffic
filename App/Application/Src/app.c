@@ -74,18 +74,19 @@ void app_read_address_and_mode(void)
 
 void traffic_calculation_app(void)
 {
-    traffic_loop[GROUP_LOOP_INDEX_1].gap_traffic = 1000;
-    traffic_loop[GROUP_LOOP_INDEX_1].speed_traffic = 120;
-    traffic_loop[GROUP_LOOP_INDEX_1].vehicle_length = 4;
-    traffic_loop[GROUP_LOOP_INDEX_1].state_group_loop = GROUP_ACTIVE;
+    traffic_loop[GROUP_1].gap_traffic = 1000;
+    traffic_loop[GROUP_1].speed_traffic = 120;
+    traffic_loop[GROUP_1].vehicle_length = 4;
+    traffic_loop[GROUP_1].state_group_loop = GROUP_ACTIVE;
 
-    traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic = 1000;
-    traffic_loop[GROUP_LOOP_INDEX_2].speed_traffic = 80;
-    traffic_loop[GROUP_LOOP_INDEX_2].vehicle_length = 22;
-    traffic_loop[GROUP_LOOP_INDEX_2].state_group_loop = GROUP_ACTIVE;
+    traffic_loop[GROUP_2].gap_traffic = 1000;
+    traffic_loop[GROUP_2].speed_traffic = 80;
+    traffic_loop[GROUP_2].vehicle_length = 22;
+    traffic_loop[GROUP_2].state_group_loop = GROUP_ACTIVE;
 
+    static uint8_t calc_index = 0;
     
-    for (uint8_t calc_index = 0; calc_index < NUMBER_OF_GROUPS_INDEX; calc_index++)
+    for (calc_index; calc_index < NUMBER_OF_GROUPS_INDEX; calc_index++)
     {
         calc_group_loop[calc_index].speed_in_meters_per_second = (traffic_loop[calc_index].speed_traffic * 1000) / 3.6;
 
@@ -99,14 +100,14 @@ void traffic_calculation_app(void)
 
     }
 
-    if(traffic_loop[GROUP_LOOP_INDEX_1].state_group_loop == GROUP_ACTIVE)
+    if(traffic_loop[GROUP_1].state_group_loop == GROUP_ACTIVE)
     {
-        transit_state_group_loop_1(calc_group_loop[GROUP_LOOP_INDEX_1].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_1].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_1].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_1].time_spent_in_the_bonds);
+        transit_state_group_loop_1(calc_group_loop[GROUP_1].time_between_loops, calc_group_loop[GROUP_1].time_in_loop, traffic_loop[GROUP_1].gap_traffic, calc_group_loop[GROUP_1].time_spent_in_the_bonds);
     }
     
-    if(traffic_loop[GROUP_LOOP_INDEX_2].state_group_loop == GROUP_ACTIVE)
+    if(traffic_loop[GROUP_2].state_group_loop == GROUP_ACTIVE)
     {
-       transit_state_group_loop_2(calc_group_loop[GROUP_LOOP_INDEX_2].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_2].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_2].time_spent_in_the_bonds);
+        transit_state_group_loop_2(calc_group_loop[GROUP_LOOP_INDEX_2].time_between_loops, calc_group_loop[GROUP_LOOP_INDEX_2].time_in_loop, traffic_loop[GROUP_LOOP_INDEX_2].gap_traffic, calc_group_loop[GROUP_LOOP_INDEX_2].time_spent_in_the_bonds);
     }
 
 }

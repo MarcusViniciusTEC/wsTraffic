@@ -41,11 +41,9 @@ void piezo_turn_off(uint8_t index)
 
 static void piezo_pulse (uint8_t index, uint32_t time_us)
 {
-    hmi_led_turn_on(index);
-    piezo_turn_on(index);
+    hmi_led_turn_on(led_index);
     for(uint32_t i = 0 ; i < time_us; i++);
-    piezo_turn_off(index);
-    hmi_led_turn_off(index);
+    hmi_led_turn_off(led_index);
 }
 
 /******************************************************************************/
@@ -128,6 +126,7 @@ void piezo_update_state(void)
 void piezo_1ms_clock(void)
 {
     piezo_update_state();
+    //tick_1ms();
 }
 
 
