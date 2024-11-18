@@ -25,6 +25,9 @@ typedef struct
       uint32_t  PinMask;
 } piezo_pininfo_t;
 
+
+
+
 typedef enum
 {
   AXLE_1 = 0U,
@@ -66,6 +69,15 @@ typedef struct
     uint32_t  weight_ms; 
     vehicle_states_t vehicle_state
 } traffic_t;
+
+typedef enum
+{
+  INITIAL_TRANSIT_GAP = 0,
+  INPUT_LOOP_ACTIVATION,
+  OUTPUT_LOOP_ACTIVATION,
+  INPUT_LOOP_DISABLED,
+  OUTPUT_LOOP_DISABLED
+} loop_state_update_t;
 
 
 

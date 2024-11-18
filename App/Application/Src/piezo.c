@@ -93,16 +93,16 @@ void init_axles(void)
 
 void piezo_update_state(void)
 {
-    static uint32_t TIMER[NUMBER_OF_CARS]  = {0};
+    static uint32_t TIMER_PIEZO[NUMBER_OF_CARS]  = {0};
+    static uint32_t TIMER_LOOP[2] = {0};
     uint8_t index_vehicle;
-    uint8_t index_axles;
     for(index_vehicle = 0; index_vehicle < NUMBER_OF_CARS; index_vehicle ++)
     {
         if(traffic[index_vehicle].vehicle_state == VEHICLE_ACTIVE)
         {
-            for (index_axles = 0; index_axles < traffic[index_vehicle].num_axles; index_axles++) 
+            for (uint8_t index_axles = 0; index_axles < traffic[index_vehicle].num_axles; index_axles++) 
             {
-                if (traffic[index_vehicle].axles[index_axles].state == AXLE_ACTIVE && TIMER[index_vehicle] == traffic[index_vehicle].axles[index_axles].delay_time) 
+                if (traffic[index_vehicle].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_vehicle] == traffic[index_vehicle].axles[index_axles].delay_time) 
                 {                 
                     piezo_pulse(traffic[index_vehicle].axles[index_axles].piezo_index, traffic[index_vehicle].weight_ms);
                     traffic[index_vehicle].axles[index_axles].state = AXLE_INACTIVE;  
@@ -116,9 +116,87 @@ void piezo_update_state(void)
 
             }
         }
-        TIMER[index_vehicle]++;
+        TIMER_PIEZO[index_vehicle]++;
+    }
+
+    uint16_t time_between_loop[2];
+    uint16_t gap[2];
+    uint16_t loop_execution_time[2];
+    uint8_t group_index;
+
+    TIMER_LOOP[group_index]++;
+    if (TIMER_LOOP[group_index] <= gap[group_index])
+    {
+        loop_update_state(INITIAL_TRANSIT_GAP, group_index); 
+    }
+    else if (TIMER_LOOP[group_index] <= (gap[group_index] + time_between_loop[group_index]))
+    {
+        loop_update_state(INPUT_LOOP_ACTIVATION, group_index); 
+    }
+    else if (TIMER_LOOP[group_index] <= (gap[group_index] + loop_execution_time[group_index]))
+    {
+        loop_update_state(OUTPUT_LOOP_ACTIVATION, group_index); 
+    }
+    else if (TIMER_LOOP[group_index] <= (gap[group_index] + loop_execution_time[group_index] + time_between_loop[group_index]))
+    {
+        loop_update_state(INPUT_LOOP_DISABLED, group_index); 
+    }
+    else
+    {
+        TIMER_LOOP[group_index] = 0;
+        time_between_loop[group_index] = 0;
+        gap[group_index] = 0;
+        loop_execution_time[group_index] = 0;
+        loop_update_state(OUTPUT_LOOP_DISABLED, group_index); 
     }
 }
+/******************************************************************************/
+
+
+
+void loop_update_state(loop_state_update_t state, uint8_t index)
+{
+    static const uint8_t LED_ENTER_LOOP         [2] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
+    static const uint8_t LED_EXIT_LOOP          [2] = {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
+    static const uint8_t ENTER_LOOP_PIN         [2] = {LOOP_ENTER_GROUP_1, LOOP_ENTER_GROUP_2};
+    static const uint8_t EXIT_LOOP_PIN          [2] = {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
+    switch (state)
+    {
+    case INITIAL_TRANSIT_GAP:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP[index]);
+        loop_turn_off   (EXIT_LOOP_PIN[index]);
+        break;
+    case INPUT_LOOP_ACTIVATION:
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (LED_ENTER_LOOP[index]);
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (LED_ENTER_LOOP[index]);
+        break;
+    case OUTPUT_LOOP_ACTIVATION:
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (LED_ENTER_LOOP[index]);
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (LED_ENTER_LOOP[index]);
+        break;
+    case INPUT_LOOP_DISABLED:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (LED_ENTER_LOOP[index]);
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (LED_ENTER_LOOP[index]);
+        break;
+    case OUTPUT_LOOP_DISABLED:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (LED_ENTER_LOOP[index]);
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (LED_ENTER_LOOP[index]);
+        break;
+      default:
+        break;
+    }
+}
+
 /******************************************************************************/
 
 void piezo_1ms_clock(void)

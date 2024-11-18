@@ -19,15 +19,6 @@ extern volatile uint32_t loop_execution_rate_1ms_timer;
 void piezo_turn_on(uint8_t index);
 void piezo_turn_off(uint8_t index);
 
-/******************************************************************************//******************************************************************************/
-// AlissonGOE
-
-traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t);
-traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t);
-void current_status_group_loop_1(traffic_status_t state);
-void current_status_group_loop_2(traffic_status_t state);
-
-// AlissonGOE
 /******************************************************************************/
 
 void loop_turn_on(uint8_t index);
