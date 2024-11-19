@@ -70,7 +70,7 @@ void app_read_address_and_mode(void)
 
 void traffic_calculation_loop(void)
 {
-    
+    //teste
     static calc_status_t state_calc = CALC_ON;
 
     if (state_calc == CALC_ON)
