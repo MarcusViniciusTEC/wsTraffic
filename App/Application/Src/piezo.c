@@ -12,11 +12,10 @@ volatile uint32_t piezo_execution_rate_1ms_timer;
 
 static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_OUTPUTS] = piezo_pininfo_vector_default_value;
 
-static traffic_t    traffic [NUMBER_OF_CARS];
-static axle_t       axles[NUMBER_OF_CARS]  [NUMBER_OF_AXLES];
-
-
-
+static traffic_t    traffic  [NUMBER_OF_CARS];
+static axle_t       axles    [NUMBER_OF_CARS]  [NUMBER_OF_AXLES];
+static app_loop_data_t  app_loop_data[NUMBER_OF_GROUPS];
+static app_loop_ctrl_t  app_loop_ctrl;
 
 /******************************************************************************/
 
@@ -91,6 +90,12 @@ void init_axles(void)
 
 /******************************************************************************/
 
+
+    uint16_t time_between_loop[2];
+    uint16_t gap[2];
+    uint16_t loop_execution_time[2];
+    uint8_t  index;
+
 void piezo_update_state(void)
 {
     static uint32_t TIMER_PIEZO[NUMBER_OF_CARS]  = {0};
@@ -118,79 +123,72 @@ void piezo_update_state(void)
         }
         TIMER_PIEZO[index_vehicle]++;
     }
-
-    uint16_t time_between_loop[2];
-    uint16_t gap[2];
-    uint16_t loop_execution_time[2];
-    uint8_t group_index;
-
-    TIMER_LOOP[group_index]++;
-    if (TIMER_LOOP[group_index] <= gap[group_index])
+    TIMER_LOOP[app_loop_ctrl.index]++;
+    if (TIMER_LOOP[index] <= app_loop_data[index].gap)
     {
-        loop_update_state(INITIAL_TRANSIT_GAP, group_index); 
+        loop_update_state(INITIAL_TRANSIT_GAP, app_loop_ctrl.index); 
     }
-    else if (TIMER_LOOP[group_index] <= (gap[group_index] + time_between_loop[group_index]))
+    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].time_between_loops))
     {
-        loop_update_state(INPUT_LOOP_ACTIVATION, group_index); 
+        loop_update_state(INPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
     }
-    else if (TIMER_LOOP[group_index] <= (gap[group_index] + loop_execution_time[group_index]))
+    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time))
     {
-        loop_update_state(OUTPUT_LOOP_ACTIVATION, group_index); 
+        loop_update_state(OUTPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
     }
-    else if (TIMER_LOOP[group_index] <= (gap[group_index] + loop_execution_time[group_index] + time_between_loop[group_index]))
+    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap+ app_loop_data[app_loop_ctrl.index].loop_execution_time + app_loop_data[app_loop_ctrl.index].time_between_loops))
     {
-        loop_update_state(INPUT_LOOP_DISABLED, group_index); 
+        loop_update_state(INPUT_LOOP_DISABLED, app_loop_ctrl.index); 
     }
     else
     {
-        TIMER_LOOP[group_index] = 0;
-        time_between_loop[group_index] = 0;
-        gap[group_index] = 0;
-        loop_execution_time[group_index] = 0;
-        loop_update_state(OUTPUT_LOOP_DISABLED, group_index); 
+        TIMER_LOOP[app_loop_ctrl.index]                         = 0;
+        app_loop_data[app_loop_ctrl.index].time_between_loops   = 0;
+        app_loop_data[app_loop_ctrl.index].gap                  = 0;
+        app_loop_data[app_loop_ctrl.index].loop_execution_time  = 0;
+        loop_update_state(OUTPUT_LOOP_DISABLED, app_loop_ctrl.index); 
     }
 }
+
 /******************************************************************************/
-
-
 
 void loop_update_state(loop_state_update_t state, uint8_t index)
 {
-    static const uint8_t LED_ENTER_LOOP         [2] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
-    static const uint8_t LED_EXIT_LOOP          [2] = {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
-    static const uint8_t ENTER_LOOP_PIN         [2] = {LOOP_ENTER_GROUP_1, LOOP_ENTER_GROUP_2};
-    static const uint8_t EXIT_LOOP_PIN          [2] = {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
+    const uint8_t LED_ENTER_LOOP     [UPDATE_NUMBER_OF_LOOPS] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
+    const uint8_t LED_EXIT_LOOP      [UPDATE_NUMBER_OF_LEDS ] = {LED_LOOP_EXIT_GROUP_1,   LED_LOOP_EXIT_GROUP_2};
+    const uint8_t ENTER_LOOP_PIN     [UPDATE_NUMBER_OF_LOOPS] = {LOOP_ENTER_GROUP_1,         LOOP_ENTER_GROUP_2};
+    const uint8_t EXIT_LOOP_PIN      [UPDATE_NUMBER_OF_LOOPS] = {LOOP_EXIT_GROUP_1,           LOOP_EXIT_GROUP_2};
     switch (state)
     {
     case INITIAL_TRANSIT_GAP:
         hmi_led_turn_off(LED_ENTER_LOOP[index]);
         loop_turn_off   (ENTER_LOOP_PIN[index]);
-        hmi_led_turn_off(LED_EXIT_LOOP[index]);
-        loop_turn_off   (EXIT_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
         break;
     case INPUT_LOOP_ACTIVATION:
         hmi_led_turn_on (LED_ENTER_LOOP[index]);
-        loop_turn_on    (LED_ENTER_LOOP[index]);
-        hmi_led_turn_off(LED_ENTER_LOOP[index]);
-        loop_turn_off   (LED_ENTER_LOOP[index]);
+        loop_turn_on    (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
         break;
     case OUTPUT_LOOP_ACTIVATION:
         hmi_led_turn_on (LED_ENTER_LOOP[index]);
-        loop_turn_on    (LED_ENTER_LOOP[index]);
-        hmi_led_turn_on (LED_ENTER_LOOP[index]);
-        loop_turn_on    (LED_ENTER_LOOP[index]);
+        loop_turn_on    (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_on (LED_EXIT_LOOP [index]);
+        loop_turn_on    (EXIT_LOOP_PIN [index]);
         break;
     case INPUT_LOOP_DISABLED:
         hmi_led_turn_off(LED_ENTER_LOOP[index]);
-        loop_turn_off   (LED_ENTER_LOOP[index]);
-        hmi_led_turn_on (LED_ENTER_LOOP[index]);
-        loop_turn_on    (LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_on (LED_EXIT_LOOP [index]);
+        loop_turn_on    (EXIT_LOOP_PIN [index]);
         break;
     case OUTPUT_LOOP_DISABLED:
         hmi_led_turn_off(LED_ENTER_LOOP[index]);
-        loop_turn_off   (LED_ENTER_LOOP[index]);
-        hmi_led_turn_off(LED_ENTER_LOOP[index]);
-        loop_turn_off   (LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
         break;
       default:
         break;

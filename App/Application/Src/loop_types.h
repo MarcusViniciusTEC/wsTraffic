@@ -18,18 +18,7 @@ typedef struct
 } loop_pininfo_t;
 
 
-typedef enum
-{
-  GROUP_ACTIVE = 0,
-  GROUP_DISABLED
-} state_group_t;
 
-typedef enum
-{
-  GROUP_1 = 0,
-  GROUP_2,
-  NUMBER_OF_GROUPS_INDEX
-} group_loop_index;
 
 typedef struct 
 {

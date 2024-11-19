@@ -26,7 +26,12 @@ typedef struct
 } piezo_pininfo_t;
 
 
-
+typedef enum
+{
+  GROUP_1 = 0,
+  GROUP_2,
+  NUMBER_OF_GROUPS
+} number_groups_t;
 
 typedef enum
 {
@@ -78,6 +83,30 @@ typedef enum
   INPUT_LOOP_DISABLED,
   OUTPUT_LOOP_DISABLED
 } loop_state_update_t;
+
+
+
+typedef enum
+{
+  GROUP_ACTIVE = 0,
+  GROUP_DISABLED
+} state_group_t;
+
+
+typedef struct 
+{
+  uint16_t gap;
+  uint16_t time_between_loops;
+  uint16_t loop_execution_time;
+}app_loop_data_t;
+
+typedef struct 
+{
+  state_group_t state;
+  uint8_t       index;
+}app_loop_ctrl_t;
+
+
 
 
 
