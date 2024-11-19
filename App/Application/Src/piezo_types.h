@@ -3,6 +3,7 @@
 
 
 #include "piezo_cfg.h"
+#include "app_types.h"
 /******************************************************************************/
 
 #define LED_PIEZO_AXILE_CONV_CH1      1
@@ -56,8 +57,8 @@ typedef enum
 
 typedef enum
 {
-  CHANNEL_ENABLE = 0U,
-  CHANNEL_DISABLE
+  CHANNEL_DISABLE = 0U,
+  CHANNEL_ENABLE 
 }vehicle_states_t;
 
 typedef struct 
@@ -96,13 +97,14 @@ typedef enum
 
 typedef enum
 {
-  GROUP_ACTIVE = 0,
+  GROUP_ENABLE = 0,
   GROUP_DISABLED
 } state_group_t;
 
 
 typedef struct 
 {
+  state_group_t state;
   uint16_t gap;
   uint16_t time_between_loops;
   uint16_t loop_execution_time;
@@ -111,7 +113,8 @@ typedef struct
 
 typedef struct 
 {
-  state_group_t state;
+ 
+  traffic_mode_t mode;
   uint8_t       index;
 }app_loop_ctrl_t;
 
