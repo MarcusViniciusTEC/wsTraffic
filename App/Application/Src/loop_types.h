@@ -21,10 +21,11 @@ typedef enum
 {
   INITIAL_TRANSIT_GAP = 0,
   INPUT_LOOP_ACTIVATION,
+  PIEZO_START,
   OUTPUT_LOOP_ACTIVATION,
   INPUT_LOOP_DISABLED,
   OUTPUT_LOOP_DISABLED
-} traffic_status_t;
+} loop_status_update_t;
 
 typedef enum
 {
@@ -46,6 +47,7 @@ typedef struct
   uint16_t time_between_loops;
   uint16_t time_spent_in_the_loops;
   uint16_t time_gap_in_ms;
+  uint16_t time_start_piezo;
 } calc_group_loop_t;
 
 typedef struct

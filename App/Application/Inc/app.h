@@ -20,7 +20,7 @@ extern volatile uint32_t app_execution_rate_1ms_timer;
 /******************************************************************************/
 // AlissonGOE
 
-void traffic_calculation_app(void);
+void traffic_calculation_loop(void);
 void value_traffic(void);
 
 // AlissonGOE

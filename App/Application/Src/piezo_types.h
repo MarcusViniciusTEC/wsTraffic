@@ -70,9 +70,6 @@ typedef struct
     vehicle_states_t vehicle_state
 } traffic_t;
 
-
-
-
 /******************************************************************************/
 
 
