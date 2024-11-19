@@ -58,6 +58,7 @@ void init_axles(void)
     app_loop_data[app_loop_ctrl.index].loop_execution_time = 3456;
     app_loop_ctrl.state = CHANNEL_ENABLE;
 
+
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
     traffic[0].weight_ms = 2000;
@@ -101,19 +102,12 @@ void init_axles(void)
 
 /******************************************************************************/
 
-
-
-
-
 void piezo_update_state(void)
 {
     static uint32_t TIMER_PIEZO[NUMBER_OF_CARS]  = {0};
     static uint32_t TIMER_LOOP[2] = {0};
     static uint8_t  state_piezo[2] = {0};
-    static uint8_t  index_channel = 0;
-    
     TIMER_LOOP[app_loop_ctrl.index]++;
-
     if(app_loop_ctrl.state == CHANNEL_ENABLE)
     {
         if (TIMER_LOOP[app_loop_ctrl.index] <= app_loop_data[app_loop_ctrl.index].gap)
@@ -125,11 +119,9 @@ void piezo_update_state(void)
             loop_update_state(INPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
             if(TIMER_LOOP[app_loop_ctrl.index] == app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].start_piezo)
             {
-                //TIMER_LOOP[0] = 0;   
                 TIMER_PIEZO[0] = 0; 
                 state_piezo[0] = START_PIEZO;
                 traffic[0].channel_state = CHANNEL_ENABLE;
-               
             }
         }
         else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time))
@@ -137,12 +129,9 @@ void piezo_update_state(void)
             loop_update_state(OUTPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
             if(TIMER_LOOP[app_loop_ctrl.index] == (app_loop_data[app_loop_ctrl.index].gap +  app_loop_data[app_loop_ctrl.index].time_between_loops + app_loop_data[app_loop_ctrl.index].start_piezo))
             {
-
-                //TIMER_LOOP[1] = 0;  
                 TIMER_PIEZO[1] = 0; 
                 state_piezo[1] = START_PIEZO;
-                traffic[1].channel_state = CHANNEL_DISABLE;
-               
+                traffic[1].channel_state = CHANNEL_ENABLE; 
             }
         }
         else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].loop_execution_time + app_loop_data[app_loop_ctrl.index].time_between_loops + app_loop_data[app_loop_ctrl.index].gap))
@@ -156,9 +145,9 @@ void piezo_update_state(void)
             app_loop_data[app_loop_ctrl.index].gap                  = 0;
             app_loop_data[app_loop_ctrl.index].loop_execution_time  = 0;
             loop_update_state(OUTPUT_LOOP_DISABLED, app_loop_ctrl.index); 
+            init_axles();
         }
     }
-
     for (uint8_t index_channel = 0; index_channel < 2; index_channel++)
     {
         if(state_piezo[index_channel] == START_PIEZO)
@@ -178,18 +167,13 @@ void piezo_update_state(void)
             {
                 if (traffic[index_channel].axles[index_state].state == AXLE_INACTIVE) 
                 {
-                        //state_piezo = STOP_PIEZO;
+
                 }
             }
            TIMER_PIEZO[index_channel]++;
         } 
     }
 }
-
-
-
-
-
 
 /******************************************************************************/
 
@@ -255,6 +239,12 @@ void piezo_init(void)
 
 void piezo_update(void)
 {
+    app_loop_ctrl.index = 0;
+    app_loop_data[app_loop_ctrl.index].time_between_loops = 432;
+    app_loop_data[app_loop_ctrl.index].gap  = 1000;
+    app_loop_data[app_loop_ctrl.index].start_piezo = 360;
+    app_loop_data[app_loop_ctrl.index].loop_execution_time = 3456;
+    app_loop_ctrl.state = CHANNEL_ENABLE;
 
 }                
 
