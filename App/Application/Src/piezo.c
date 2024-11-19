@@ -38,11 +38,26 @@ void piezo_turn_off(uint8_t index)
 
 /******************************************************************************/
 
-static void piezo_pulse (uint8_t index, uint32_t time_us)
+static void piezo_pulse (uint8_t index, uint32_t time_us, traffic_mode_t mode)
 {
-    hmi_led_turn_on(index);
-    for(uint32_t i = 0 ; i < time_us; i++);
-    hmi_led_turn_off(index);
+    const uint8_t LEDS_PIEZO_CONV  [NUMBER_OF_GROUPS] = {LED_PIEZO_AXILE_CONV_CH1, LED_PIEZO_AXILE_CONV_CH2};
+    const uint8_t LEDS_PIEZO_PE    [NUMBER_OF_GROUPS] = {LED_PIEZO_AXILE_PE_CH1  , LED_PIEZO_AXILE_PE_CH2};
+    if(mode == MODE_CONV)
+    {
+        hmi_led_turn_on(LEDS_PIEZO_CONV[index]);
+        piezo_turn_on(index);
+        for(uint32_t i = 0 ; i < time_us; i++);
+        piezo_turn_off(index);
+        hmi_led_turn_off(LEDS_PIEZO_CONV[index]);
+    }
+    else if(mode == MODE_PE)
+    {
+        hmi_led_turn_on(LEDS_PIEZO_PE[index]);
+        piezo_turn_on(index);
+        for(uint32_t i = 0 ; i < time_us; i++);
+        piezo_turn_off(index);
+        hmi_led_turn_off(LEDS_PIEZO_PE[index]);
+    }
 }
 
 /******************************************************************************/
@@ -65,12 +80,14 @@ void init_axles(void)
     app_loop_data[1].gap  = 1000;
     app_loop_data[1].start_piezo = 360;
     app_loop_data[1].loop_execution_time = 3456;
+    
+    
     app_loop_data[1].state = CHANNEL_ENABLE;
 
 
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
-    traffic[0].weight_ms = 2000;
+    traffic[0].weight_ms = 15000;
     traffic[0].axles[AXLE_1].delay_time = 1;;
     traffic[0].axles[AXLE_2].delay_time = (((app_loop_data[0].loop_execution_time-(360*2))*20)/100);
     traffic[0].axles[AXLE_3].delay_time = (((app_loop_data[0].loop_execution_time-(360*2))*30)/100);
@@ -85,12 +102,12 @@ void init_axles(void)
     for (int i = 0; i < traffic[0].num_axles; i++) 
     {
         traffic[0].axles[i].state = AXLE_ACTIVE;
-        traffic[0].axles[i].piezo_index = 1;
+        traffic[0].axles[i].piezo_index = GROUP_1;
     }
 
     traffic[1].axles = axles[1];
     traffic[1].num_axles = 9;
-    traffic[1].weight_ms = 2000;
+    traffic[1].weight_ms = 15000;
     traffic[1].axles[AXLE_1].delay_time = 1;;
     traffic[1].axles[AXLE_2].delay_time = (((app_loop_data[1].loop_execution_time-(360*2))*20)/100);
     traffic[1].axles[AXLE_3].delay_time = (((app_loop_data[1].loop_execution_time-(360*2))*30)/100);
@@ -105,7 +122,7 @@ void init_axles(void)
     for (int i = 0; i < traffic[1].num_axles; i++) 
     {
         traffic[1].axles[i].state = AXLE_ACTIVE;
-        traffic[1].axles[i].piezo_index = 4;
+        traffic[1].axles[i].piezo_index = GROUP_2;
     }
 }
 
@@ -134,9 +151,11 @@ void piezo_update_state(void)
                     /*-------------------------- SAT MODO PESAGEM/CONVENCIONAL, TRIGGER PARA PIEZO DE ENTRADA --------------------------*/
                     if(app_loop_ctrl.mode == MODE_PE)
                     {
-
+                        TIMER_PIEZO [0] = 0; 
+                        state_piezo [0] = START_PIEZO;
+                        traffic     [0].channel_state = CHANNEL_ENABLE;
                     }
-                    if(app_loop_ctrl.mode == MODE_CONV)
+                    else if(app_loop_ctrl.mode == MODE_CONV)
                     {
                         TIMER_PIEZO [index_channel_loop] = 0; 
                         state_piezo [index_channel_loop] = START_PIEZO;
@@ -152,9 +171,14 @@ void piezo_update_state(void)
                     /*-------------------------- SAT MODO PESAGEM, TRIGGER PARA PIEZO DE SAIDA --------------------------*/
                     if(app_loop_ctrl.mode == MODE_PE)
                     {
-                        //TIMER_PIEZO[1] = 0; 
-                        //state_piezo[1] = START_PIEZO;
-                        //traffic[1].channel_state = CHANNEL_ENABLE; 
+                        TIMER_PIEZO [1] = 0; 
+                        state_piezo [1] = START_PIEZO;
+                        traffic     [1].channel_state = CHANNEL_ENABLE;
+                    }
+                    else if (app_loop_ctrl.mode == MODE_CONV)
+                    {
+
+
                     }
                 }
             }
@@ -184,7 +208,7 @@ void piezo_update_state(void)
                 {
                     if (traffic[index_channel].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_channel] == traffic[index_channel].axles[index_axles].delay_time) 
                     {                 
-                        piezo_pulse(traffic[index_channel].axles[index_axles].piezo_index, traffic[index_channel].weight_ms);
+                        piezo_pulse(traffic[index_channel].axles[index_axles].piezo_index, traffic[index_channel].weight_ms, app_loop_ctrl.mode);
                         traffic[index_channel].axles[index_axles].state = AXLE_INACTIVE;  
                     }
                 }
@@ -205,19 +229,10 @@ void piezo_update_state(void)
 
 void loop_update_state(loop_state_update_t state, uint8_t index, traffic_mode_t mode)
 {
-    const uint8_t LED_ENTER_LOOP     [UPDATE_NUMBER_OF_LOOPS] = {LED_LOOP_ENTER_GROUP_1 , LED_LOOP_ENTER_GROUP_2};
-    const uint8_t LED_EXIT_LOOP      [UPDATE_NUMBER_OF_LEDS ] = {LED_LOOP_EXIT_GROUP_1  , LED_LOOP_EXIT_GROUP_2 };
-
-    if(mode == MODE_CONV)
-    {
-
-    }
-    else if( mode == MODE_PE)
-    {
-        
-    }
-    const uint8_t ENTER_LOOP_PIN     [UPDATE_NUMBER_OF_LOOPS] = {LOOP_ENTER_GROUP_1     , LOOP_ENTER_GROUP_2    };
-    const uint8_t EXIT_LOOP_PIN      [UPDATE_NUMBER_OF_LOOPS] = {LOOP_EXIT_GROUP_1      , LOOP_EXIT_GROUP_2     };
+    const uint8_t LED_ENTER_LOOP[UPDATE_NUMBER_OF_LOOPS] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
+    const uint8_t LED_EXIT_LOOP[UPDATE_NUMBER_OF_LEDS] =  {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
+    const uint8_t ENTER_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_ENTER_GROUP_1, LOOP_ENTER_GROUP_2};
+    const uint8_t EXIT_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
 
     switch (state)
     {
@@ -275,7 +290,7 @@ void piezo_init(void)
 
 void piezo_update(void)
 {
-    
+
 }                
 
 
