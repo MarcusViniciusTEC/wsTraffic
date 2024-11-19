@@ -157,6 +157,9 @@ void loop_init_apply(void)
 
 void loop_1ms_clock(void)
 {
+
+  traffic_calculation_app();
+
 }
 
 /******************************************************************************/
