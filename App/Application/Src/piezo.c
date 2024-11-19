@@ -87,7 +87,7 @@ void init_axles(void)
 
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
-    traffic[0].weight_ms = 15000;
+    traffic[0].weight_ms = 1000;
     traffic[0].axles[AXLE_1].delay_time = 1;;
     traffic[0].axles[AXLE_2].delay_time = (((app_loop_data[0].loop_execution_time-(360*2))*20)/100);
     traffic[0].axles[AXLE_3].delay_time = (((app_loop_data[0].loop_execution_time-(360*2))*30)/100);
@@ -107,7 +107,7 @@ void init_axles(void)
 
     traffic[1].axles = axles[1];
     traffic[1].num_axles = 9;
-    traffic[1].weight_ms = 15000;
+    traffic[1].weight_ms = 10000;
     traffic[1].axles[AXLE_1].delay_time = 1;;
     traffic[1].axles[AXLE_2].delay_time = (((app_loop_data[1].loop_execution_time-(360*2))*20)/100);
     traffic[1].axles[AXLE_3].delay_time = (((app_loop_data[1].loop_execution_time-(360*2))*30)/100);
