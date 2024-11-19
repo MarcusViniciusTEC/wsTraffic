@@ -28,7 +28,11 @@ typedef enum
   CALC_OF
 }calc_status_t;
 
-
+typedef enum
+{
+  CALC_ON = 0,
+  CALC_OF
+}calc_status_t;
 
 
 /******************************************************************************/
