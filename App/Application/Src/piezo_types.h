@@ -85,6 +85,14 @@ typedef enum
 } loop_state_update_t;
 
 
+typedef enum 
+{
+  STOP_PIEZO = 0U,
+  START_PIEZO,
+  PIEZO_STATES
+}piezo_state_t;
+
+
 
 typedef enum
 {
@@ -98,6 +106,7 @@ typedef struct
   uint16_t gap;
   uint16_t time_between_loops;
   uint16_t loop_execution_time;
+  uint16_t start_piezo;
 }app_loop_data_t;
 
 typedef struct 

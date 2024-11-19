@@ -51,35 +51,46 @@ static void piezo_pulse (uint8_t index, uint32_t time_us)
 
 void init_axles(void) 
 {
+    app_loop_ctrl.index = 0;
+    app_loop_data[app_loop_ctrl.index].time_between_loops = 432;
+    app_loop_data[app_loop_ctrl.index].gap  = 1000;
+    app_loop_data[app_loop_ctrl.index].start_piezo = 360;
+    app_loop_data[app_loop_ctrl.index].loop_execution_time = 3456;
+    app_loop_ctrl.state = VEHICLE_ACTIVE;
 
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
     traffic[0].weight_ms = 2000;
-    traffic[0].axles[AXLE_1].delay_time = 1;
-    traffic[0].axles[AXLE_2].delay_time = 10;
-    traffic[0].axles[AXLE_3].delay_time = 15;
-    traffic[0].axles[AXLE_4].delay_time = 20;
-    traffic[0].axles[AXLE_5].delay_time = 21;
-    traffic[0].axles[AXLE_6].delay_time = 22;
-    traffic[0].axles[AXLE_7].delay_time = 25;
-    traffic[0].axles[AXLE_8].delay_time = 28;
-    traffic[0].axles[AXLE_9].delay_time = 30;
-    traffic[0].vehicle_state = VEHICLE_ACTIVE;
+    traffic[0].axles[AXLE_1].delay_time = 1;;
+    traffic[0].axles[AXLE_2].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*20)/100);
+    traffic[0].axles[AXLE_3].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*30)/100);
+    traffic[0].axles[AXLE_4].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*50)/100);
+    traffic[0].axles[AXLE_5].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*70)/100);
+    traffic[0].axles[AXLE_6].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*80)/100);
+    traffic[0].axles[AXLE_7].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*85)/100);
+    traffic[0].axles[AXLE_8].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*90)/100);
+    traffic[0].axles[AXLE_9].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*100)/100);
+    traffic[0].vehicle_state = VEHICLE_INACTIVE;
 
     for (int i = 0; i < traffic[0].num_axles; i++) 
     {
         traffic[0].axles[i].state = AXLE_ACTIVE;
         traffic[0].axles[i].piezo_index = 1;
-    
     }
 
     traffic[1].axles = axles[1];
-    traffic[1].num_axles = 3;
+    traffic[1].num_axles = 9;
     traffic[1].weight_ms = 2000;
-    traffic[1].axles[AXLE_1].delay_time = 1;
-    traffic[1].axles[AXLE_2].delay_time = 10;
-    traffic[1].axles[AXLE_3].delay_time = 15;
-    traffic[1].vehicle_state = VEHICLE_ACTIVE;
+    traffic[1].axles[AXLE_1].delay_time = 1;;
+    traffic[1].axles[AXLE_2].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*20)/100);
+    traffic[1].axles[AXLE_3].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*30)/100);
+    traffic[1].axles[AXLE_4].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*50)/100);
+    traffic[1].axles[AXLE_5].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*70)/100);
+    traffic[1].axles[AXLE_6].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*80)/100);
+    traffic[1].axles[AXLE_7].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*85)/100);
+    traffic[1].axles[AXLE_8].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*90)/100);
+    traffic[1].axles[AXLE_9].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*100)/100);
+    traffic[1].vehicle_state = VEHICLE_INACTIVE;
 
     for (int i = 0; i < traffic[1].num_axles; i++) 
     {
@@ -90,64 +101,75 @@ void init_axles(void)
 
 /******************************************************************************/
 
-
-    uint16_t time_between_loop[2];
-    uint16_t gap[2];
-    uint16_t loop_execution_time[2];
-    uint8_t  index;
-
 void piezo_update_state(void)
 {
     static uint32_t TIMER_PIEZO[NUMBER_OF_CARS]  = {0};
     static uint32_t TIMER_LOOP[2] = {0};
-    uint8_t index_vehicle;
-    for(index_vehicle = 0; index_vehicle < NUMBER_OF_CARS; index_vehicle ++)
+    static uint8_t  state_piezo =0;
+    
+    TIMER_LOOP[app_loop_ctrl.index]++;
+
+    if(app_loop_ctrl.state == VEHICLE_ACTIVE)
     {
-        if(traffic[index_vehicle].vehicle_state == VEHICLE_ACTIVE)
+        if (TIMER_LOOP[app_loop_ctrl.index] <= app_loop_data[app_loop_ctrl.index].gap)
         {
-            for (uint8_t index_axles = 0; index_axles < traffic[index_vehicle].num_axles; index_axles++) 
+            loop_update_state(INITIAL_TRANSIT_GAP, app_loop_ctrl.index); 
+        }
+        else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].time_between_loops))
+        {
+            loop_update_state(INPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
+            if(TIMER_LOOP[app_loop_ctrl.index] == app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].start_piezo)
             {
-                if (traffic[index_vehicle].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_vehicle] == traffic[index_vehicle].axles[index_axles].delay_time) 
-                {                 
-                    piezo_pulse(traffic[index_vehicle].axles[index_axles].piezo_index, traffic[index_vehicle].weight_ms);
-                    traffic[index_vehicle].axles[index_axles].state = AXLE_INACTIVE;  
+                /*YOUR PIEZO GROUP 1*/
+            }
+        }
+        else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time))
+        {
+            loop_update_state(OUTPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
+            if(TIMER_LOOP[app_loop_ctrl.index] == (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time) + app_loop_data[app_loop_ctrl.index].start_piezo)
+            {
+                /*YOUR PIEZO GROUP 2*/
+            }
+        }
+        else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].loop_execution_time + app_loop_data[app_loop_ctrl.index].time_between_loops + app_loop_data[app_loop_ctrl.index].gap))
+        {
+            loop_update_state(INPUT_LOOP_DISABLED, app_loop_ctrl.index); 
+        }
+        else
+        {
+            TIMER_LOOP[app_loop_ctrl.index]                         = 0;
+            app_loop_data[app_loop_ctrl.index].time_between_loops   = 0;
+            app_loop_data[app_loop_ctrl.index].gap                  = 0;
+            app_loop_data[app_loop_ctrl.index].loop_execution_time  = 0;
+            loop_update_state(OUTPUT_LOOP_DISABLED, app_loop_ctrl.index); 
+        }
+    }
+    if(state_piezo == START_PIEZO)
+    {
+        uint8_t index_vehicle;
+        for(index_vehicle = 0; index_vehicle < NUMBER_OF_CARS; index_vehicle ++)
+        {
+            if(traffic[index_vehicle].vehicle_state == VEHICLE_ACTIVE)
+            {
+                for (uint8_t index_axles = 0; index_axles < traffic[index_vehicle].num_axles; index_axles++) 
+                {
+                    if (traffic[index_vehicle].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_vehicle] == traffic[index_vehicle].axles[index_axles].delay_time) 
+                    {                 
+                        piezo_pulse(traffic[index_vehicle].axles[index_axles].piezo_index, traffic[index_vehicle].weight_ms);
+                        traffic[index_vehicle].axles[index_axles].state = AXLE_INACTIVE;  
+                    }
                 }
             }
-        }
-        for (uint8_t index_state = 0; index_state < traffic[index_vehicle].num_axles; index_state++) 
-        {
-            if (traffic[index_vehicle].axles[index_state].state == AXLE_INACTIVE) 
+            for (uint8_t index_state = 0; index_state < traffic[index_vehicle].num_axles; index_state++) 
             {
-
+                if (traffic[index_vehicle].axles[index_state].state == AXLE_INACTIVE) 
+                {
+                    //state_piezo = STOP_PIEZO;
+                }
             }
+            TIMER_PIEZO[index_vehicle]++;
         }
-        TIMER_PIEZO[index_vehicle]++;
-    }
-    TIMER_LOOP[app_loop_ctrl.index]++;
-    if (TIMER_LOOP[index] <= app_loop_data[index].gap)
-    {
-        loop_update_state(INITIAL_TRANSIT_GAP, app_loop_ctrl.index); 
-    }
-    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].time_between_loops))
-    {
-        loop_update_state(INPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
-    }
-    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time))
-    {
-        loop_update_state(OUTPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
-    }
-    else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap+ app_loop_data[app_loop_ctrl.index].loop_execution_time + app_loop_data[app_loop_ctrl.index].time_between_loops))
-    {
-        loop_update_state(INPUT_LOOP_DISABLED, app_loop_ctrl.index); 
-    }
-    else
-    {
-        TIMER_LOOP[app_loop_ctrl.index]                         = 0;
-        app_loop_data[app_loop_ctrl.index].time_between_loops   = 0;
-        app_loop_data[app_loop_ctrl.index].gap                  = 0;
-        app_loop_data[app_loop_ctrl.index].loop_execution_time  = 0;
-        loop_update_state(OUTPUT_LOOP_DISABLED, app_loop_ctrl.index); 
-    }
+    }   
 }
 
 /******************************************************************************/

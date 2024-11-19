@@ -39,9 +39,9 @@ typedef struct
 
 typedef struct
 {
-  calc_group_loop_t calc_vehicle[11];
-  vehicle_t vehicle[11];
-  state_group_t state_group_loop;
+//   calc_group_loop_t calc_vehicle[11];
+//   vehicle_t vehicle[11];
+//  //state_group_t state_group_loop;
 
 } traffic_loop_group_t;
 
