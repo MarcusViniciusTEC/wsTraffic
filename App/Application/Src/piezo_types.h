@@ -56,8 +56,8 @@ typedef enum
 
 typedef enum
 {
-  VEHICLE_INACTIVE = 0U,
-  VEHICLE_ACTIVE
+  CHANNEL_ENABLE = 0U,
+  CHANNEL_DISABLE
 }vehicle_states_t;
 
 typedef struct 
@@ -72,7 +72,7 @@ typedef struct
     axle_t*   axles;       
     uint8_t   num_axles;
     uint32_t  weight_ms; 
-    vehicle_states_t vehicle_state
+    vehicle_states_t channel_state
 } traffic_t;
 
 typedef enum

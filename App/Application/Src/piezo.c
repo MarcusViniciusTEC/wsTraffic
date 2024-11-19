@@ -56,7 +56,7 @@ void init_axles(void)
     app_loop_data[app_loop_ctrl.index].gap  = 1000;
     app_loop_data[app_loop_ctrl.index].start_piezo = 360;
     app_loop_data[app_loop_ctrl.index].loop_execution_time = 3456;
-    app_loop_ctrl.state = VEHICLE_ACTIVE;
+    app_loop_ctrl.state = CHANNEL_ENABLE;
 
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
@@ -70,7 +70,7 @@ void init_axles(void)
     traffic[0].axles[AXLE_7].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*85)/100);
     traffic[0].axles[AXLE_8].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*90)/100);
     traffic[0].axles[AXLE_9].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*100)/100);
-    traffic[0].vehicle_state = VEHICLE_INACTIVE;
+    traffic[0].channel_state = CHANNEL_DISABLE;
 
     for (int i = 0; i < traffic[0].num_axles; i++) 
     {
@@ -90,7 +90,7 @@ void init_axles(void)
     traffic[1].axles[AXLE_7].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*85)/100);
     traffic[1].axles[AXLE_8].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*90)/100);
     traffic[1].axles[AXLE_9].delay_time = (((app_loop_data[app_loop_ctrl.index].loop_execution_time-(360*2))*100)/100);
-    traffic[1].vehicle_state = VEHICLE_INACTIVE;
+    traffic[1].channel_state = CHANNEL_DISABLE;
 
     for (int i = 0; i < traffic[1].num_axles; i++) 
     {
@@ -101,15 +101,20 @@ void init_axles(void)
 
 /******************************************************************************/
 
+
+
+
+
 void piezo_update_state(void)
 {
     static uint32_t TIMER_PIEZO[NUMBER_OF_CARS]  = {0};
     static uint32_t TIMER_LOOP[2] = {0};
-    static uint8_t  state_piezo =0;
+    static uint8_t  state_piezo[2] = {0};
+    static uint8_t  index_channel = 0;
     
     TIMER_LOOP[app_loop_ctrl.index]++;
 
-    if(app_loop_ctrl.state == VEHICLE_ACTIVE)
+    if(app_loop_ctrl.state == CHANNEL_ENABLE)
     {
         if (TIMER_LOOP[app_loop_ctrl.index] <= app_loop_data[app_loop_ctrl.index].gap)
         {
@@ -120,15 +125,24 @@ void piezo_update_state(void)
             loop_update_state(INPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
             if(TIMER_LOOP[app_loop_ctrl.index] == app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].start_piezo)
             {
-                /*YOUR PIEZO GROUP 1*/
+                //TIMER_LOOP[0] = 0;   
+                TIMER_PIEZO[0] = 0; 
+                state_piezo[0] = START_PIEZO;
+                traffic[0].channel_state = CHANNEL_ENABLE;
+               
             }
         }
         else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time))
         {
             loop_update_state(OUTPUT_LOOP_ACTIVATION, app_loop_ctrl.index); 
-            if(TIMER_LOOP[app_loop_ctrl.index] == (app_loop_data[app_loop_ctrl.index].gap + app_loop_data[app_loop_ctrl.index].loop_execution_time) + app_loop_data[app_loop_ctrl.index].start_piezo)
+            if(TIMER_LOOP[app_loop_ctrl.index] == (app_loop_data[app_loop_ctrl.index].gap +  app_loop_data[app_loop_ctrl.index].time_between_loops + app_loop_data[app_loop_ctrl.index].start_piezo))
             {
-                /*YOUR PIEZO GROUP 2*/
+
+                //TIMER_LOOP[1] = 0;  
+                TIMER_PIEZO[1] = 0; 
+                state_piezo[1] = START_PIEZO;
+                traffic[1].channel_state = CHANNEL_DISABLE;
+               
             }
         }
         else if (TIMER_LOOP[app_loop_ctrl.index] <= (app_loop_data[app_loop_ctrl.index].loop_execution_time + app_loop_data[app_loop_ctrl.index].time_between_loops + app_loop_data[app_loop_ctrl.index].gap))
@@ -144,33 +158,38 @@ void piezo_update_state(void)
             loop_update_state(OUTPUT_LOOP_DISABLED, app_loop_ctrl.index); 
         }
     }
-    if(state_piezo == START_PIEZO)
+
+    for (uint8_t index_channel = 0; index_channel < 2; index_channel++)
     {
-        uint8_t index_vehicle;
-        for(index_vehicle = 0; index_vehicle < NUMBER_OF_CARS; index_vehicle ++)
+        if(state_piezo[index_channel] == START_PIEZO)
         {
-            if(traffic[index_vehicle].vehicle_state == VEHICLE_ACTIVE)
+            if(traffic[index_channel].channel_state == CHANNEL_ENABLE)
             {
-                for (uint8_t index_axles = 0; index_axles < traffic[index_vehicle].num_axles; index_axles++) 
+                for (uint8_t index_axles = 0; index_axles < traffic[index_channel].num_axles; index_axles++) 
                 {
-                    if (traffic[index_vehicle].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_vehicle] == traffic[index_vehicle].axles[index_axles].delay_time) 
+                    if (traffic[index_channel].axles[index_axles].state == AXLE_ACTIVE && TIMER_PIEZO[index_channel] == traffic[index_channel].axles[index_axles].delay_time) 
                     {                 
-                        piezo_pulse(traffic[index_vehicle].axles[index_axles].piezo_index, traffic[index_vehicle].weight_ms);
-                        traffic[index_vehicle].axles[index_axles].state = AXLE_INACTIVE;  
+                        piezo_pulse(traffic[index_channel].axles[index_axles].piezo_index, traffic[index_channel].weight_ms);
+                        traffic[index_channel].axles[index_axles].state = AXLE_INACTIVE;  
                     }
                 }
             }
-            for (uint8_t index_state = 0; index_state < traffic[index_vehicle].num_axles; index_state++) 
+            for (uint8_t index_state = 0; index_state < traffic[index_channel].num_axles; index_state++) 
             {
-                if (traffic[index_vehicle].axles[index_state].state == AXLE_INACTIVE) 
+                if (traffic[index_channel].axles[index_state].state == AXLE_INACTIVE) 
                 {
-                    //state_piezo = STOP_PIEZO;
+                        //state_piezo = STOP_PIEZO;
                 }
             }
-            TIMER_PIEZO[index_vehicle]++;
-        }
-    }   
+           TIMER_PIEZO[index_channel]++;
+        } 
+    }
 }
+
+
+
+
+
 
 /******************************************************************************/
 
