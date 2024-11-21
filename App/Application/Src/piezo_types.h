@@ -130,6 +130,7 @@ typedef struct
  
   traffic_mode_t mode;
   uint8_t       index;
+  uint8_t next_traffic;
 }app_loop_ctrl_t;
 
 
