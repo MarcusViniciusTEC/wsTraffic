@@ -22,7 +22,6 @@ typedef struct
 
 typedef struct 
 {
-
   uint16_t time_in_loop;
   uint16_t time_between_loops;
   uint16_t time_execution_loops;
@@ -36,6 +35,7 @@ typedef struct
 {
   uint8_t vehicle_length;
   uint8_t vehicle_axles[9];
+  uint8_t vehicle_number_axles;
 
 } vehicle_t;
 
@@ -44,7 +44,7 @@ typedef struct
   calc_group_loop_t vehicle[11];
   uint16_t time_gap_in_ms;
   uint16_t speed_in_meters_per_second;
-//  //state_group_t state_group_loop;
+//state_group_t state_group_loop;
 
 } traffic_loop_group_t;
 

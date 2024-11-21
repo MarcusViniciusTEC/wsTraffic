@@ -45,6 +45,7 @@ typedef enum
   AXLE_7,
   AXLE_8,
   AXLE_9,
+  AXLE_10,
   NUMBER_OF_AXLES
 }axle_types_t;
 
