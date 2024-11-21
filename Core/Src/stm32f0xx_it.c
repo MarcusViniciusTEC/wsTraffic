@@ -26,6 +26,7 @@
 #include "sl.h"
 #include "app.h"
 #include "hmi.h"
+#include "piezo.h"
 
 /* USER CODE END Includes */
 
@@ -150,6 +151,7 @@ void SysTick_Handler(void)
 void TIM6_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_IRQn 0 */
+  piezo_1us_clock();
   LL_TIM_ClearFlag_UPDATE(TIM6);
   /* USER CODE END TIM6_IRQn 0 */
   /* USER CODE BEGIN TIM6_IRQn 1 */
