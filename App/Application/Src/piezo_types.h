@@ -99,7 +99,6 @@ typedef enum
   OUTPUT_LOOP_DISABLED
 } loop_state_update_t;
 
-
 typedef enum 
 {
   STOP_PIEZO = 0U,
@@ -107,14 +106,11 @@ typedef enum
   PIEZO_STATES
 }piezo_state_t;
 
-
-
 typedef enum
 {
   GROUP_ENABLE = 0,
   GROUP_DISABLED
 } state_group_t;
-
 
 typedef struct 
 {
@@ -127,7 +123,6 @@ typedef struct
 
 typedef struct 
 {
- 
   traffic_mode_t mode;
   uint8_t       index;
   uint8_t next_traffic;

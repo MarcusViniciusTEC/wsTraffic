@@ -100,50 +100,52 @@ static void piezo_pulse_update_state (uint8_t index)
 
 /******************************************************************************/
 
-void init_axles(void) 
+
+void init_axles(uint8_t index) 
 {
     app_loop_ctrl.mode = MODE_CONV;
-
     static uint16_t traffic_time_between_loops  [11] = {0};
     static uint16_t traffic_gap                 [11] = {0};
     static uint16_t traffic_start_piezo         [11] = {0};
     static uint16_t traffic_loop_execution_time [11] = {0};
     static uint16_t traffic_state               [11] = {0};
 
-    traffic_time_between_loops      [1] = 
-    traffic_gap                     [1] =
-    traffic_start_piezo             [1] =
-    traffic_loop_execution_time     [1] =
+    traffic_time_between_loops      [0] = 270;
+    traffic_gap                     [0] = 1000;
+    traffic_start_piezo             [0] = 225;
+    traffic_loop_execution_time     [0] = 1080;
+    traffic_state                   [0] = CHANNEL_ENABLE;
+
+    traffic_time_between_loops      [1] = 216;
+    traffic_gap                     [1] = 1000;
+    traffic_start_piezo             [1] = 180;
+    traffic_loop_execution_time     [1] = 864;
     traffic_state                   [1] = CHANNEL_ENABLE;
 
-    traffic_time_between_loops      [2] =
-    traffic_gap                     [2] =
-    traffic_start_piezo             [2] =
-    traffic_loop_execution_time     [2] =
+    traffic_time_between_loops      [2] = 180;  
+    traffic_gap                     [2] = 1000;
+    traffic_start_piezo             [2] = 150;
+    traffic_loop_execution_time     [2] = 720;
     traffic_state                   [2] = CHANNEL_ENABLE;
 
-    traffic_time_between_loops      [3] =
-    traffic_gap                     [3] =
-    traffic_start_piezo             [3] =
-    traffic_loop_execution_time     [3] =
+    traffic_time_between_loops      [3] = 135;
+    traffic_gap                     [3] = 1000;  
+    traffic_start_piezo             [3] = 112;
+    traffic_loop_execution_time     [3] = 540;
     traffic_state                   [3] = CHANNEL_ENABLE;
 
-    traffic_time_between_loops      [4] =
-    traffic_gap                     [4] =
-    traffic_start_piezo             [4] =
-    traffic_loop_execution_time     [4] =
-    traffic_state                   [4] = CHANNEL_ENABLE;
+    app_loop_data[0].time_between_loops         =   traffic_time_between_loops  [index];
+    app_loop_data[0].gap                        =   traffic_gap                 [index];
+    app_loop_data[0].start_piezo                =   traffic_start_piezo         [index];
+    app_loop_data[0].loop_execution_time        =   traffic_loop_execution_time [index];
+    app_loop_data[0].state                      =   traffic_state               [index];
 
-    uint8_t index  = 0;
+    app_loop_data[1].time_between_loops         =   traffic_time_between_loops  [index];
+    app_loop_data[1].gap                        =   traffic_gap                 [index];
+    app_loop_data[1].start_piezo                =   traffic_start_piezo         [index];
+    app_loop_data[1].loop_execution_time        =   traffic_loop_execution_time [index];
+    app_loop_data[1].state                      =   traffic_state               [index];
 
-    app_loop_data[0].time_between_loops         = 270; 
-    app_loop_data[0].gap                        = 1000;
-    app_loop_data[0].start_piezo                = 225;
-    app_loop_data[0].loop_execution_time        = 3060;
-    app_loop_data[0].state                      =  CHANNEL_ENABLE;
-    //app_loop_data[0].cha
-
-    
     traffic[0].axles = axles[0];
     traffic[0].num_axles = 9;
     traffic[0].weight_ms = 80;
@@ -163,13 +165,6 @@ void init_axles(void)
         traffic[0].axles[i].state = AXLE_ACTIVE;
         traffic[0].axles[i].piezo_index = GROUP_1;
     }
-
-
-    app_loop_data[1].time_between_loops = 270;
-    app_loop_data[1].gap  = 1000;
-    app_loop_data[1].start_piezo = 225;
-    app_loop_data[1].loop_execution_time = 3060;
-    app_loop_data[1].state = CHANNEL_DISABLE;
 
     traffic[1].axles = axles[1];
     traffic[1].num_axles = 9;
@@ -201,6 +196,7 @@ void piezo_update_state(void)
     static uint32_t TIMER_LOOP[NUMBER_OF_GROUPS] = {0};
     static uint8_t  state_piezo[NUMBER_OF_GROUPS] = {0};
     uint8_t index_channel_loop = 0;
+    static uint8_t index[2] = {0};
     for(index_channel_loop = 0; index_channel_loop < NUMBER_OF_GROUPS; index_channel_loop++)
     {
         if(app_loop_data[index_channel_loop].state == CHANNEL_ENABLE)
@@ -256,8 +252,16 @@ void piezo_update_state(void)
                 app_loop_data[index_channel_loop].time_between_loops   = 0;
                 app_loop_data[index_channel_loop].gap                  = 0;
                 app_loop_data[index_channel_loop].loop_execution_time  = 0;
-                loop_update_state(OUTPUT_LOOP_DISABLED, index_channel_loop, app_loop_ctrl.mode); 
-                init_axles();
+                loop_update_state(OUTPUT_LOOP_DISABLED, index_channel_loop, app_loop_ctrl.mode);
+                if(index_channel_loop == GROUP_2) 
+                {
+                    if(index[index_channel_loop] > 3)
+                    {
+                        index[index_channel_loop] = 0;
+                    }
+                    init_axles(index[index_channel_loop]);
+                    index[index_channel_loop]++;
+                }
             }
             TIMER_LOOP[index_channel_loop]++;
         }
@@ -351,7 +355,7 @@ void piezo_1ms_clock(void)
 
 void piezo_init(void)
 {
-    init_axles();
+    init_axles(0);
     for(uint8_t index = 0; index < NUMBER_OF_GROUPS; index ++)
     {
         piezo_pulse_data[index].state = PIEZO_PULSE_INIT;
