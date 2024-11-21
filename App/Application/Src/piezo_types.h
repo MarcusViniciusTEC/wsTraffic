@@ -77,6 +77,20 @@ typedef struct
 } traffic_t;
 
 typedef enum
+{   PIEZO_PULSE_INIT = 0U,
+    PIEZO_PULSE_TURN_ON,
+    PIEZO_PULSE_PERIOD_TURN_ON,
+    PIEZO_PULSE_TURN_OFF
+}led_pulse_state_t;
+
+typedef struct 
+{
+    uint16_t delay;
+    led_pulse_state_t state;
+    traffic_mode_t mode;
+}piezo_pulse_data_t;
+
+typedef enum
 {
   INITIAL_TRANSIT_GAP = 0,
   INPUT_LOOP_ACTIVATION,
