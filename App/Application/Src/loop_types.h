@@ -28,6 +28,8 @@ typedef struct
   uint16_t time_execution_loops;
   uint16_t time_start_piezo_ms;
   uint16_t piezo_trigger_time[11];
+  uint16_t piezo_firing_window;
+  uint16_t time_trigger_for_axle[9];
 } calc_group_loop_t;
 
 typedef struct
@@ -39,7 +41,6 @@ typedef struct
 
 typedef struct
 {
-  vehicle_t vehicle_data[11];
   calc_group_loop_t vehicle[11];
   uint16_t time_gap_in_ms;
   uint16_t speed_in_meters_per_second;
