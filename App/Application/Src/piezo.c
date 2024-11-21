@@ -104,11 +104,11 @@ static void piezo_pulse_update_state (uint8_t index)
 void init_axles(uint8_t index) 
 {
     app_loop_ctrl.mode = MODE_CONV;
-    static uint16_t traffic_time_between_loops  [11] = {0};
-    static uint16_t traffic_gap                 [11] = {0};
-    static uint16_t traffic_start_piezo         [11] = {0};
-    static uint16_t traffic_loop_execution_time [11] = {0};
-    static uint16_t traffic_state               [11] = {0};
+    uint16_t traffic_time_between_loops  [11] = {0};
+    uint16_t traffic_gap                 [11] = {0};
+    uint16_t traffic_start_piezo         [11] = {0};
+    uint16_t traffic_loop_execution_time [11] = {0};
+    uint16_t traffic_state               [11] = {0};
 
     traffic_time_between_loops      [0] = 270;
     traffic_gap                     [0] = 1000;
@@ -134,7 +134,13 @@ void init_axles(uint8_t index)
     traffic_loop_execution_time     [3] = 540;
     traffic_state                   [3] = CHANNEL_ENABLE;
 
-    app_loop_data[0].time_between_loops         =   traffic_time_between_loops  [index];
+    traffic_time_between_loops      [4] = 120;
+    traffic_gap                     [4] = 1000;  
+    traffic_start_piezo             [4] = 100;
+    traffic_loop_execution_time     [4] = 480;
+    traffic_state                   [4] = CHANNEL_ENABLE;
+
+    app_loop_data[0].time_between_loops       =   traffic_time_between_loops  [index];
     app_loop_data[0].gap                        =   traffic_gap                 [index];
     app_loop_data[0].start_piezo                =   traffic_start_piezo         [index];
     app_loop_data[0].loop_execution_time        =   traffic_loop_execution_time [index];
@@ -236,13 +242,9 @@ void piezo_update_state(void)
                         state_piezo [GROUP_2] = START_PIEZO;
                         traffic     [GROUP_2].channel_state = CHANNEL_ENABLE;
                     }
-                    else if (app_loop_ctrl.mode == MODE_CONV)
-                    {
-                    }
                 }
             }
-            else if (TIMER_LOOP[index_channel_loop] <= (app_loop_data[index_channel_loop].loop_execution_time 
-            +app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].gap))
+            else if (TIMER_LOOP[index_channel_loop] <= (app_loop_data[index_channel_loop].loop_execution_time+app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].gap))
             {
                 loop_update_state(INPUT_LOOP_DISABLED, index_channel_loop, app_loop_ctrl.mode); 
             }
@@ -255,7 +257,7 @@ void piezo_update_state(void)
                 loop_update_state(OUTPUT_LOOP_DISABLED, index_channel_loop, app_loop_ctrl.mode);
                 if(index_channel_loop == GROUP_2) 
                 {
-                    if(index[index_channel_loop] > 3)
+                    if(index[index_channel_loop] > 4)
                     {
                         index[index_channel_loop] = 0;
                     }
