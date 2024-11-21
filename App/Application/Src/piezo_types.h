@@ -73,7 +73,7 @@ typedef struct
     axle_t*   axles;       
     uint8_t   num_axles;
     uint32_t  weight_ms; 
-    vehicle_states_t channel_state
+    vehicle_states_t channel_state;
 } traffic_t;
 
 typedef enum
