@@ -32,6 +32,8 @@ static vehicle_t                vehicle_data    [NUMBER_OF_VEHICLES];
 
 uint16_t gap_traffic_in_second = 1000;
 uint8_t speed_traffic = 40;
+state_calc_t state_calc = CALC_ENABLE;
+state_sumulation_t state_simulation;
 
 /******************************************************************************/
 
@@ -210,6 +212,59 @@ void app_update_1ms_state_piezo(void)
 
 void app_set_address_and_mode(uint8_t addres, uint8_t mode)
 {
+    switch (addres)
+    {
+    case 0:
+        app_traffic_ctrl.state = TRAFFIC_STOP;
+        loop_update_state( OUTPUT_LOOP_DISABLED, GROUP_1, app_traffic_ctrl.mode);
+        loop_update_state( OUTPUT_LOOP_DISABLED, GROUP_2, app_traffic_ctrl.mode);
+        break;
+
+    case 1:
+        speed_traffic = 20;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 2:
+        speed_traffic = 30;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 3:
+        speed_traffic = 40;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 4:
+        speed_traffic = 50;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 5:
+        speed_traffic = 60;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 6:
+        speed_traffic = 70;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+
+    case 7:
+        speed_traffic = 80;
+        app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+        app_traffic_ctrl.state = TRAFFIC_INIT;
+        break;
+    
+    default:
+        break;
+    }
 
 }
 
@@ -217,7 +272,7 @@ void app_set_address_and_mode(uint8_t addres, uint8_t mode)
 
 void app_read_address_and_mode(void)
 {
-    uint8_t address = 0;
+    static uint8_t address = 0;
     uint8_t mode = 0;
     if (LL_GPIO_IsInputPinSet(APP_ID_MODE_GPIO_PORT, APP_ID_MODE_GPIO_PIN) == MODE_PE)
     {
@@ -227,43 +282,40 @@ void app_read_address_and_mode(void)
     {
         mode = MODE_CONV;
     }
-    if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_OFF)
+
+    if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 0);
     }
-    if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_OFF)
+    else
+    {
+        address &= ~(1 << 0);
+    }
+
+    if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 1);
     }
-    if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_OFF)
+    else
+    {
+        address &= ~(1 << 1);
+    }
+
+    if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 2);
     }
+    else
+    {
+        address &= ~(1 << 2);
+    }
+
     app_set_address_and_mode(address, mode);
 }
 
 /******************************************************************************/
 
 void app_1ms_clock(void)
-{
-    app_update_1ms_state_loop();
-    app_update_1ms_state_piezo();
-}
-
-
-/******************************************************************************/
-
-void app_init(void)
-{   
-    traffic_data();
-    vehicle_update_data();
-    app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
-    app_traffic_ctrl.state = TRAFFIC_INIT;
-}
-
-/******************************************************************************/
-
-void app_update(void)
 {
     switch (app_traffic_ctrl.state)
     {
@@ -275,11 +327,32 @@ void app_update(void)
         app_traffic_ctrl.state = TRAFFIC_RUNNING;
         break;
     case TRAFFIC_RUNNING:
-
+        app_update_1ms_state_loop();
+        app_update_1ms_state_piezo();
+        break;
+    case TRAFFIC_STOP:
+        app_read_address_and_mode();
         break;
     default:
         break;
     }
+}
+
+
+/******************************************************************************/
+
+void app_init(void)
+{   
+    traffic_data();
+    app_traffic_ctrl.state = TRAFFIC_STOP;
+
+}
+
+/******************************************************************************/
+
+void app_update(void)
+{
+    app_read_address_and_mode();
 }
 
 /******************************************************************************/

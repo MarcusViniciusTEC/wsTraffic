@@ -87,8 +87,15 @@ typedef enum
 {
   TRAFFIC_INIT = 0U,
   TRAFFIC_CALC,
-  TRAFFIC_RUNNING
+  TRAFFIC_RUNNING,
+  TRAFFIC_STOP
 }traffic_state_t;
+
+typedef enum
+{
+  SIMU_ENABLE = 0,
+  SIMU_DISABLE
+}state_sumulation_t;
 
 typedef struct 
 {
