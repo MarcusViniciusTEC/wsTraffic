@@ -14,3 +14,31 @@ MODELOS
 	 9-> 2D4  6 AXLES
 	10-> 35D  8 AXLES
 	11-> 3D6  9 AXLES
+
+
+	static uint8_t address = 255;
+
+	if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_ON)
+    {
+        address |= (1 << 0);
+    }
+    else
+    {
+        address |= ~(1 << 0);
+    }
+    if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_ON)
+    {
+        address |= ~(1 << 0);
+    }
+    else
+    {
+        address |= (1 << 0);
+    }
+    if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_ON)
+    {
+        address |= (1 << 0);
+    }
+    else
+    {
+        address |= ~(1 << 0);
+    }

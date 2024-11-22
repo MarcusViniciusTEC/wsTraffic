@@ -23,6 +23,12 @@ typedef enum
   MODE_CONV
 }traffic_mode_t;
 
+typedef enum
+{
+  SIMU_ENABLE = 0,
+  SIMU_DISABLE
+}state_sumulation_t;
+
 typedef enum 
 {
   AXLE_INACTIVE = 0U,
