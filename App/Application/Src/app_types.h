@@ -56,26 +56,35 @@ typedef enum
   GROUP_DISABLED
 } state_group_t;
 
+
+typedef enum
+{
+  SET_TIMER = 0U,
+  RESET_TIMER,
+}timer_state_t;
+
 typedef struct 
 {
-  state_group_t state;
-  uint16_t gap;
   uint16_t time_between_loops;
-  uint16_t loop_execution_time;
+  uint16_t gap;
   uint16_t start_piezo;
+  uint16_t loop_execution_time;
+  state_group_t state;
 }app_loop_data_t;
 
 typedef struct 
 {
   traffic_mode_t mode;
-  uint8_t       index;
   uint8_t next_traffic;
-}app_loop_ctrl_t;
+  uint8_t traffic_id;
+  uint8_t last_traffic;
+}app_traffic_ctrl_t;
 
 typedef struct
 {
-  piezo_state_t stape_piezo_enter;
-  piezo_state_t stape_piezo_exit;
+  timer_state_t timer_state;
+  piezo_state_t state_piezo_enter;
+  piezo_state_t state_piezo_exit;
 }app_piezo_ctrl_t;
 
 typedef struct 
