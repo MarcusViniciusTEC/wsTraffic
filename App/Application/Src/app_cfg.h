@@ -4,7 +4,10 @@
 /******************************************************************************/
 
 
-#define ONE_CICLYE          1   
+#define ONE_CICLYE          1  
+
+#define CHANNEL_DEFAULT     0
+
 
 
 #define APP_ID_MODE_GPIO_PORT       nMODE_ID_1_GPIO_Port

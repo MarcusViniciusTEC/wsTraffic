@@ -30,6 +30,14 @@ typedef enum
   AXLE_NUMBER_OF_STATES
 }axle_state_t;
 
+
+typedef enum
+{
+  CALC_ENABLE = 0,
+  CALC_DISABLED
+} state_calc_t;
+
+
 typedef enum
 {
   CHANNEL_DISABLE = 0U,
@@ -62,6 +70,22 @@ typedef enum
   SET_TIMER = 0U,
   RESET_TIMER,
 }timer_state_t;
+
+typedef enum
+{              
+  VEHICLES_CLASS_2C = 0,   // 2 AXLES  |FRONT| 0.5 |EX-1-S| 4.5 |EX-2-D| 1.0  |BACK|                                                                                              6m - 16T
+  VEHICLES_CLASS_3C,       // 3 AXLES  |FRONT| 0.5 |EX-1-S| 7.5 |EX-2-D| 1.2  |EX-3-D| 0.8  |BACK|                                                                               10m - 23T
+  VEHICLES_CLASS_4C,       // 4 AXLES  |FRONT| 0.5 |EX-1-S| 8.1 |EX-2-D| 1.2  |EX-3-D| 1.2  |EX-4-D| 1.0 |BACK|                                                                  12m - 31T
+  VEHICLES_CLASS_2S3,      // 5 AXLES  |FRONT| 0.5 |EX-1-S| 3.0 |EX-2-D| 11.2 |EX-3-D| 1.2  |EX-4-D| 1.2 |EX-5-D| 1.0 |BACK|                                                     18m - 41T
+  VEHICLES_CLASS_3S3,      // 6 AXLES  |FRONT| 0.5 |EX-1-S| 3.0 |EX-2-D| 1.2  |EX-3-D| 11.2 |EX-4-D| 1.2 |EX-5-D| 1.2 |EX-6-D| 1.0 |BACK|                                        20m - 45T
+  VEHICLES_CLASS_3D3,      // 6 AXLES  |FRONT| 0.5 |EX-1-S| 3.0 |EX-2-D| 1.2  |EX-3-D| 14.2 |EX-4-D| 1.2 |EX-5-D| 1.2 |EX-6-D| 1.0 |BACK|                                        23m - 49T
+  VEHICLES_CLASS_3C2,      // 5 AXLES  |FRONT| 0.5 |EX-1-S| 4.5 |EX-2-D| 1.2  |EX-3-D| 5.4  |EX-4-D| 6.4 |EX-5-D| 1.0 |BACK|                                                     19m - 43T
+  VEHICLES_CLASS_2J4,      // 6 AXLES  |FRONT| 0.5 |EX-1-S| 3.0 |EX-2-D| 5.0  |EX-3-D| 3.3  |EX-4-D| 5.0 |EX-5-D| 1.2 |EX-6-D| 1.0 |BACK|                                        19m - 45T
+  VEHICLES_CLASS_2D4,      // 6 AXLES  |FRONT| 0.5 |EX-1-S| 3.1 |EX-2-D| 6.0  |EX-3-D| 1.2  |EX-4-D| 6.0 |EX-5-D| 1.2 |EX-6-D| 1.0 |BACK|                                        19m - 45T
+  VEHICLES_CLASS_35D,      // 8 AXLES  |FRONT| 0.5 |EX-1-S| 3.3 |EX-2-D| 1.2  |EX-3-D| 7.2  |EX-4-D| 7.2 |EX-5-D| 1.2 |EX-6-D| 7.2 |EX-7-D| 1.2 |EX-8-D| 1.0 |BACK|              30m - 67T
+  VEHICLES_CLASS_3D6,      // 9 AXLES  |FRONT| 0.5 |EX-1-S| 3.1 |EX-2-D| 1.2  |EX-3-D| 5.0  |EX-4-S| 5.0 |EX-5-S| 5.0 |EX-6-D| 1.2 |EX-7-D| 5.0 |EX-8-S| 5.0 |EX-9-S| 1.0 |BACK| 32m - 80T
+  NUMBER_OF_VEHICLES
+} vehicle_class_t;
 
 typedef struct 
 {
