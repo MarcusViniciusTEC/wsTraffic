@@ -18,46 +18,22 @@
 
 /******************************************************************************/
 
-#define transito_teste                             \
-{                                                  \
-    {                                              \ 
-        .time_between_loops  =   270,              \
-        .gap                 =   1000,             \
-        .start_piezo         =   225,              \
-        .loop_execution_time =   1080,             \
-        .state               =   CHANNEL_ENABLE    \
-    }                                              \                                    
-    ,                                              \ 
-    {                                              \ 
-        .time_between_loops  =   216,              \
-        .gap                 =   1000,             \
-        .start_piezo         =   180,              \  
-        .loop_execution_time =   1864,             \
-        .state               =   CHANNEL_ENABLE    \
-    }                                              \                                                                                              
-}   
-
 volatile uint32_t app_execution_rate_1ms_timer;
+
+/******************************************************************************/
 
 static app_piezo_data_t         app_piezo_data  [NUMBER_OF_CARS];
 static axle_t                   axles           [NUMBER_OF_CARS]   [NUMBER_OF_AXLES];
 static app_loop_data_t          app_loop_data   [NUMBER_OF_GROUPS];
 static app_traffic_ctrl_t       app_traffic_ctrl;
 static app_piezo_ctrl_t         app_piezo_ctrl  [NUMBER_OF_GROUPS];
-
-static app_loop_data_t app_piezo_data_vector[2] = transito_teste;
-
-
-traffic_loop_group_t calc_group_loop[2];
-vehicle_t vehicle_data[11];
+static traffic_loop_group_t     calc_group_loop [NUMBER_OF_GROUPS];
+static vehicle_t                vehicle_data    [NUMBER_OF_VEHICLES];
 
 uint16_t gap_traffic_in_second = 1000;
 uint8_t speed_traffic = 40;
-state_calc_t state_calc = CALC_ENABLE;
 
 /******************************************************************************/
-
-
 
 void traffic_calculation_app(void)
 {
@@ -92,63 +68,54 @@ void traffic_calculation_app(void)
         }
         axle_index = 0;
     }
-    state_calc = CALC_DISABLED;
 }
 
-void init_axles() 
+/******************************************************************************/
+
+static void traffic_ctrl_increment_id(void)
+{
+    if(app_traffic_ctrl.traffic_id < NUMBER_OF_VEHICLES)
+    {
+        app_traffic_ctrl.traffic_id ++;
+        if(app_traffic_ctrl.traffic_id == NUMBER_OF_VEHICLES)
+        {
+            app_traffic_ctrl.traffic_id = 0;
+        }
+    }
+}
+
+/******************************************************************************/
+
+void vehicle_update_data(void) 
 {
     app_traffic_ctrl.mode = MODE_CONV;
+    traffic_ctrl_increment_id();
     for(uint8_t index_group = 0; index_group < 2; index_group++)
     {
-        app_loop_data[index_group].gap                  = calc_group_loop[CHANNEL_DEFAULT].time_gap_in_ms;
-        app_loop_data[index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_execution_loops;
-        app_loop_data[index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_start_piezo_ms;
-        app_loop_data[index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_between_loops;
-        app_loop_data[index_group].state                = CHANNEL_ENABLE;
-    }
+        app_loop_data [index_group].gap                  = calc_group_loop[CHANNEL_DEFAULT].time_gap_in_ms;
+        app_loop_data [index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_execution_loops;
+        app_loop_data [index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_start_piezo_ms;
+        app_loop_data [index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_between_loops;
+        app_loop_data [index_group].state                = CHANNEL_ENABLE;
+        app_piezo_data[index_group].axles = axles[index_group];
+        app_piezo_data[index_group].num_axles = vehicle_data[app_traffic_ctrl.traffic_id].vehicle_number_axles;
+        app_piezo_data[index_group].weight_ms = 80;
+        app_piezo_data[index_group].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_1];
+        app_piezo_data[index_group].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_2];
+        app_piezo_data[index_group].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_3];
+        app_piezo_data[index_group].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_4];
+        app_piezo_data[index_group].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_5];
+        app_piezo_data[index_group].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_6];
+        app_piezo_data[index_group].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_7];
+        app_piezo_data[index_group].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_8];
+        app_piezo_data[index_group].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_9];
+        app_piezo_data[index_group].channel_state = CHANNEL_ENABLE; 
 
-    app_piezo_data[0].axles = axles[CHANNEL_DEFAULT];
-    app_piezo_data[0].num_axles = vehicle_data[1].vehicle_number_axles;
-    app_piezo_data[0].weight_ms = 80;
-    app_piezo_data[0].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_1];
-    app_piezo_data[0].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_2];
-    app_piezo_data[0].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_3];
-    app_piezo_data[0].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_4];
-    app_piezo_data[0].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_5];
-    app_piezo_data[0].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_6];
-    app_piezo_data[0].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_7];
-    app_piezo_data[0].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_8];
-    app_piezo_data[0].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_9];
-    app_piezo_data[0].channel_state = CHANNEL_ENABLE;
-
-    for (int i = 0; i < app_piezo_data[0].num_axles; i++) 
-    {
-        app_piezo_data[0].axles[i].state = AXLE_ACTIVE;
-        app_piezo_data[0].axles[i].piezo_index = GROUP_1;
-    }
-
-
-
-    app_piezo_data[1].axles = axles[1];
-    app_piezo_data[1].num_axles = vehicle_data[1].vehicle_number_axles;
-    app_piezo_data[1].weight_ms = 80;
-    app_piezo_data[1].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_1];
-    app_piezo_data[1].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_2];
-    app_piezo_data[1].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_3];
-    app_piezo_data[1].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_4];
-    app_piezo_data[1].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_5];
-    app_piezo_data[1].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_6];
-    app_piezo_data[1].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_7];
-    app_piezo_data[1].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_8];
-    app_piezo_data[1].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_9];
-    app_piezo_data[1].channel_state = CHANNEL_ENABLE;
-
-    app_piezo_data[1].channel_state = CHANNEL_ENABLE;
-
-    for (int i = 0; i < app_piezo_data[1].num_axles; i++) 
-    {
-        app_piezo_data[1].axles[i].state = AXLE_ACTIVE;
-        app_piezo_data[1].axles[i].piezo_index = GROUP_2;
+        for (int index_axles = 0; index_axles < app_piezo_data[index_group].num_axles; index_axles++) 
+        {
+                app_piezo_data[index_group].axles[index_axles].state = AXLE_ACTIVE;
+                app_piezo_data[index_group].axles[index_axles].piezo_index = index_group /*OUTPUT: GRUPO 0 E GRUPO 1*/;
+        }
     }
 }
 
@@ -196,7 +163,7 @@ void app_update_1ms_state_loop(void)
                 loop_update_state(OUTPUT_LOOP_DISABLED, index_channel_loop, app_traffic_ctrl.mode);
                 if(index_channel_loop == GROUP_2) 
                 {
-                    init_axles();
+                    vehicle_update_data();
                 }
             }
             TIMER_LOOP[index_channel_loop]++;
@@ -241,6 +208,7 @@ void app_update_1ms_state_piezo(void)
 
 void app_set_address_and_mode(uint8_t addres, uint8_t mode)
 {
+
 }
 
 /******************************************************************************/
@@ -276,12 +244,6 @@ void app_read_address_and_mode(void)
 
 void app_1ms_clock(void)
 {
-    if (state_calc == CALC_ENABLE)
-    {
-        value_traffic();
-        traffic_calculation_app();
-    }
-
     app_update_1ms_state_loop();
     app_update_1ms_state_piezo();
 }
@@ -290,14 +252,32 @@ void app_1ms_clock(void)
 /******************************************************************************/
 
 void app_init(void)
-{
-    init_axles();
+{   
+    traffic_data();
+    vehicle_update_data();
+    app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
+    app_traffic_ctrl.state = TRAFFIC_INIT;
 }
 
 /******************************************************************************/
 
 void app_update(void)
 {
+    switch (app_traffic_ctrl.state)
+    {
+    case TRAFFIC_INIT:
+        app_traffic_ctrl.state = TRAFFIC_CALC;
+        break;
+    case TRAFFIC_CALC:
+        traffic_calculation_app();
+        app_traffic_ctrl.state = TRAFFIC_RUNNING;
+        break;
+    case TRAFFIC_RUNNING:
+
+        break;
+    default:
+        break;
+    }
 
 }
 
@@ -309,7 +289,7 @@ void app_deinit(void)
 
 /******************************************************************************/
 
-void value_traffic(void)
+void traffic_data(void)
 {
     vehicle_data[VEHICLES_CLASS_2C].vehicle_length = 6;
     vehicle_data[VEHICLES_CLASS_2C].vehicle_number_axles = 2;

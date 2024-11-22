@@ -10,7 +10,6 @@
 
 #define TIME_ZERO 0
 
-
 typedef enum
 {
   KEY_ON = 0,
@@ -30,13 +29,11 @@ typedef enum
   AXLE_NUMBER_OF_STATES
 }axle_state_t;
 
-
 typedef enum
 {
   CALC_ENABLE = 0,
   CALC_DISABLED
 } state_calc_t;
-
 
 typedef enum
 {
@@ -64,7 +61,6 @@ typedef enum
   GROUP_DISABLED
 } state_group_t;
 
-
 typedef enum
 {
   SET_TIMER = 0U,
@@ -87,6 +83,13 @@ typedef enum
   NUMBER_OF_VEHICLES
 } vehicle_class_t;
 
+typedef enum
+{
+  TRAFFIC_INIT = 0U,
+  TRAFFIC_CALC,
+  TRAFFIC_RUNNING
+}traffic_state_t;
+
 typedef struct 
 {
   uint16_t time_between_loops;
@@ -99,6 +102,7 @@ typedef struct
 typedef struct 
 {
   traffic_mode_t mode;
+  traffic_state_t state;
   uint8_t next_traffic;
   uint8_t traffic_id;
   uint8_t last_traffic;
