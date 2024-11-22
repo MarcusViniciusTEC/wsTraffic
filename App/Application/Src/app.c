@@ -39,7 +39,7 @@
 
 volatile uint32_t app_execution_rate_1ms_timer;
 
-static traffic_t                app_piezo_data  [NUMBER_OF_CARS];
+static app_piezo_data_t                app_piezo_data  [NUMBER_OF_CARS];
 static axle_t                   axles           [NUMBER_OF_CARS]   [NUMBER_OF_AXLES];
 static app_loop_data_t          app_loop_data   [NUMBER_OF_GROUPS];
 static app_traffic_ctrl_t       app_traffic_ctrl;

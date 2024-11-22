@@ -100,7 +100,7 @@ typedef struct
     uint8_t   num_axles;
     uint32_t  weight_ms; 
     vehicle_states_t channel_state
-} traffic_t;
+} app_piezo_data_t;
 
 
 /******************************************************************************/
