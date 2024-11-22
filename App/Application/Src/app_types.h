@@ -22,6 +22,11 @@ typedef enum
   MODE_CONV
 }traffic_mode_t;
 
+typedef enum
+{
+  CALC_ENABLE = 0,
+  CALC_DISABLED
+} state_calc_t;
 
 
 

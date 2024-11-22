@@ -275,7 +275,7 @@ void loop_update_state(loop_state_update_t state, uint8_t index, traffic_mode_t 
 
 void piezo_1ms_clock(void)
 {
-    piezo_update_state();
+    //piezo_update_state();
 }
 
 
@@ -283,7 +283,7 @@ void piezo_1ms_clock(void)
 
 void piezo_init(void)
 {
-    init_axles();
+    //init_axles();
 }                  
 
 /******************************************************************************/
