@@ -101,24 +101,24 @@ void init_axles()
     for(uint8_t index_group = 0; index_group < 2; index_group++)
     {
         app_loop_data[index_group].gap                  = calc_group_loop[CHANNEL_DEFAULT].time_gap_in_ms;
-        app_loop_data[index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_execution_loops;
-        app_loop_data[index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_start_piezo_ms;
-        app_loop_data[index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_between_loops;
+        app_loop_data[index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_execution_loops;
+        app_loop_data[index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_start_piezo_ms;
+        app_loop_data[index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_between_loops;
         app_loop_data[index_group].state                = CHANNEL_ENABLE;
     }
 
     app_piezo_data[0].axles = axles[CHANNEL_DEFAULT];
-    app_piezo_data[0].num_axles = vehicle_data[0].vehicle_number_axles;
+    app_piezo_data[0].num_axles = vehicle_data[1].vehicle_number_axles;
     app_piezo_data[0].weight_ms = 80;
-    app_piezo_data[0].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_1];
-    app_piezo_data[0].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_2];
-    app_piezo_data[0].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_3];
-    app_piezo_data[0].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_4];
-    app_piezo_data[0].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_5];
-    app_piezo_data[0].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_6];
-    app_piezo_data[0].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_7];
-    app_piezo_data[0].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_8];
-    app_piezo_data[0].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_9];
+    app_piezo_data[0].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_1];
+    app_piezo_data[0].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_2];
+    app_piezo_data[0].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_3];
+    app_piezo_data[0].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_4];
+    app_piezo_data[0].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_5];
+    app_piezo_data[0].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_6];
+    app_piezo_data[0].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_7];
+    app_piezo_data[0].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_8];
+    app_piezo_data[0].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_9];
     app_piezo_data[0].channel_state = CHANNEL_ENABLE;
 
     for (int i = 0; i < app_piezo_data[0].num_axles; i++) 
@@ -128,19 +128,19 @@ void init_axles()
     }
 
 
-    
+
     app_piezo_data[1].axles = axles[1];
-    app_piezo_data[1].num_axles = vehicle_data[0].vehicle_number_axles;
+    app_piezo_data[1].num_axles = vehicle_data[1].vehicle_number_axles;
     app_piezo_data[1].weight_ms = 80;
-    app_piezo_data[1].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_1];
-    app_piezo_data[1].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_2];
-    app_piezo_data[1].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_3];
-    app_piezo_data[1].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_4];
-    app_piezo_data[1].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_5];
-    app_piezo_data[1].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_6];
-    app_piezo_data[1].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_7];
-    app_piezo_data[1].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_8];
-    app_piezo_data[1].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[0].time_trigger_for_axle[AXLE_9];
+    app_piezo_data[1].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_1];
+    app_piezo_data[1].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_2];
+    app_piezo_data[1].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_3];
+    app_piezo_data[1].axles[AXLE_4].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_4];
+    app_piezo_data[1].axles[AXLE_5].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_5];
+    app_piezo_data[1].axles[AXLE_6].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_6];
+    app_piezo_data[1].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_7];
+    app_piezo_data[1].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_8];
+    app_piezo_data[1].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[1].time_trigger_for_axle[AXLE_9];
     app_piezo_data[1].channel_state = CHANNEL_ENABLE;
 
     app_piezo_data[1].channel_state = CHANNEL_ENABLE;
