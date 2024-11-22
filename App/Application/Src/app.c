@@ -35,16 +35,19 @@ uint8_t speed_traffic = 40;
 
 /******************************************************************************/
 
+static void traffic_data(void);
+
+
+/******************************************************************************/
+
 void traffic_calculation_app(void)
 {
-    static uint8_t group_index = 0;
-    static vehicle_class_t vehicle_index = VEHICLES_CLASS_2C;
-    static axle_types_t axle_index = 0;
+    static uint8_t group_index = CHANNEL_DEFAULT;
 
     calc_group_loop[group_index].time_gap_in_ms = gap_traffic_in_second * 1000;
     calc_group_loop[group_index].speed_in_meters_per_second = ((speed_traffic * 1000) / 3.6);
 
-    for (vehicle_index; vehicle_index <= NUMBER_OF_VEHICLES; vehicle_index++)
+    for (vehicle_class_t vehicle_index = VEHICLES_CLASS_2C; vehicle_index <= NUMBER_OF_VEHICLES; (vehicle_class_t)vehicle_index++)
     {
         calc_group_loop[group_index].vehicle[vehicle_index].time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) 
         / calc_group_loop[group_index].speed_in_meters_per_second);
@@ -61,12 +64,11 @@ void traffic_calculation_app(void)
         calc_group_loop[group_index].vehicle[vehicle_index].piezo_firing_window = (calc_group_loop[group_index].vehicle[vehicle_index].time_execution_loops 
         - (2 * calc_group_loop[group_index].vehicle[vehicle_index].time_start_piezo_ms));
 
-        for (axle_index; axle_index <= vehicle_data[vehicle_index].vehicle_number_axles; axle_index++)
+        for (axle_types_t axle_index = AXLE_1; axle_index <= vehicle_data[vehicle_index].vehicle_number_axles; (axle_types_t)axle_index++)
         {
             calc_group_loop[group_index].vehicle[vehicle_index].time_trigger_for_axle[axle_index] = ((calc_group_loop[group_index].vehicle[vehicle_index].piezo_firing_window 
             * vehicle_data[vehicle_index].vehicle_axles[axle_index]) / 100) ;
         }
-        axle_index = 0;
     }
 }
 
@@ -96,7 +98,7 @@ void vehicle_update_data(void)
         app_loop_data [index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_execution_loops;
         app_loop_data [index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_start_piezo_ms;
         app_loop_data [index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_between_loops;
-        app_loop_data [index_group].state                = CHANNEL_ENABLE;
+        app_loop_data [index_group].state                = GROUP_ENABLE;
         app_piezo_data[index_group].axles = axles[index_group];
         app_piezo_data[index_group].num_axles = vehicle_data[app_traffic_ctrl.traffic_id].vehicle_number_axles;
         app_piezo_data[index_group].weight_ms = 80;
@@ -127,7 +129,7 @@ void app_update_1ms_state_loop(void)
     uint8_t index_channel_loop = 0;
     for(index_channel_loop = 0; index_channel_loop < NUMBER_OF_GROUPS; index_channel_loop++)
     {
-        if(app_loop_data[index_channel_loop].state == CHANNEL_ENABLE)
+        if(app_loop_data[index_channel_loop].state == GROUP_ENABLE)
         {
             if (TIMER_LOOP[index_channel_loop] <= app_loop_data[index_channel_loop].gap)
             {
@@ -145,12 +147,12 @@ void app_update_1ms_state_loop(void)
             else if (TIMER_LOOP[index_channel_loop] <= (app_loop_data[index_channel_loop].gap + app_loop_data[index_channel_loop].loop_execution_time))
             {
                 loop_update_state(OUTPUT_LOOP_ACTIVATION, index_channel_loop, app_traffic_ctrl.mode); 
-                if(TIMER_LOOP[index_channel_loop] == (app_loop_data[index_channel_loop].gap+app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].start_piezo))
+                if(TIMER_LOOP[index_channel_loop] == (uint32_t)(app_loop_data[index_channel_loop].gap + app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].start_piezo))
                 {    /*-------------------------- SAT MODO PESAGEM, TRIGGER PARA PIEZO DE SAIDA --------------------------*/        
                     
                 }
             }
-            else if (TIMER_LOOP[index_channel_loop] <= (app_loop_data[index_channel_loop].loop_execution_time+app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].gap))
+            else if (TIMER_LOOP[index_channel_loop] <= (uint32_t)(app_loop_data[index_channel_loop].loop_execution_time + app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].gap))
             {
                 loop_update_state(INPUT_LOOP_DISABLED, index_channel_loop, app_traffic_ctrl.mode); 
             }
@@ -278,7 +280,6 @@ void app_update(void)
     default:
         break;
     }
-
 }
 
 /******************************************************************************/
@@ -289,7 +290,7 @@ void app_deinit(void)
 
 /******************************************************************************/
 
-void traffic_data(void)
+static void traffic_data(void)
 {
     vehicle_data[VEHICLES_CLASS_2C].vehicle_length = 6;
     vehicle_data[VEHICLES_CLASS_2C].vehicle_number_axles = 2;

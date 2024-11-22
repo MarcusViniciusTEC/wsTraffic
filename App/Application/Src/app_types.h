@@ -4,7 +4,7 @@
 /******************************************************************************/
 
 #include "app_cfg.h"
-#include "loop.h"
+//#include "loop.h"
 
 /******************************************************************************/
 
@@ -117,18 +117,18 @@ typedef struct
 
 typedef struct 
 {
-    uint32_t      delay_time;  
-    uint8_t       piezo_index;    
-    axle_state_t  state;       
+  uint32_t      delay_time;  
+  uint8_t       piezo_index;    
+  axle_state_t  state;       
 } axle_t;
 
 typedef struct 
 {
-    axle_t*   axles;       
-    uint8_t   num_axles;
-    uint32_t  weight_ms; 
-    vehicle_states_t channel_state
-} app_piezo_data_t;
+  axle_t*   axles;       
+  uint8_t   num_axles;
+  uint32_t  weight_ms; 
+  vehicle_states_t  channel_state;
+}app_piezo_data_t;
 
 
 /******************************************************************************/
