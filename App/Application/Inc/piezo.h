@@ -18,6 +18,8 @@ extern volatile uint32_t piezo_execution_rate_1ms_timer;
 void piezo_turn_on(uint8_t index);
 void piezo_turn_off(uint8_t index);
 
+void piezo_pulse_received_parameters(uint8_t index, traffic_mode_t mode,  piezo_pulse_data_t piezo_pulse_data_par);
+
 void piezo_1us_clock(void);
 
 void piezo_1ms_clock(void);    

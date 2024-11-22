@@ -34,170 +34,6 @@ void loop_turn_off(uint8_t index)
 }
 
 /******************************************************************************/
-// AlissonGOE
-
-// traffic_status_t transit_state_group_loop_1(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t)
-// {
-//   static uint32_t count_loop_1 = 0;
-
-//   count_loop_1++;
-
-
-//   if (count_loop_1 <= gap)
-//   {
-//     current_status_group_loop_1(INITIAL_TRANSIT_GAP); // off off
-//   }
-//   else if (count_loop_1 <= (gap + time_between_loops_t))
-//   {
-//     current_status_group_loop_1(INPUT_LOOP_ACTIVATION); // on off
-//   }
-//   else if (count_loop_1 <= (gap + time_spent_in_the_bonds_t))
-//   {
-//     current_status_group_loop_1(OUTPUT_LOOP_ACTIVATION); // on on
-//   }
-//   else if (count_loop_1 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
-//   {
-//     current_status_group_loop_1(INPUT_LOOP_DISABLED); // off on
-//   }
-//   else
-//   {
-//     count_loop_1 = 0;
-//     current_status_group_loop_1(OUTPUT_LOOP_DISABLED); // off off
-//     return OUTPUT_LOOP_DISABLED;
-//   }
-// }
-
-// traffic_status_t transit_state_group_loop_2(uint32_t time_between_loops_t, uint32_t time_in_loop_t, uint32_t gap, uint32_t time_spent_in_the_bonds_t)
-// {
-//   static uint32_t count_loop_2 = 0;
-
-//   count_loop_2++;
-
-//   if (count_loop_2 <= gap)
-//   {
-//     current_status_group_loop_2(INITIAL_TRANSIT_GAP); // off off
-//   }
-//   else if (count_loop_2 <= (gap + time_between_loops_t))
-//   {
-//     current_status_group_loop_2(INPUT_LOOP_ACTIVATION); // on off
-//   }
-//   else if (count_loop_2 <= (gap + time_spent_in_the_bonds_t))
-//   {
-//     current_status_group_loop_2(OUTPUT_LOOP_ACTIVATION); // on on
-//   }
-//   else if (count_loop_2 <= (gap + time_spent_in_the_bonds_t + time_between_loops_t))
-//   {
-//     current_status_group_loop_2(INPUT_LOOP_DISABLED); // off on
-//   }
-//   else
-//   {
-//     count_loop_2 = 0;
-//     current_status_group_loop_2(OUTPUT_LOOP_DISABLED); // off off
-//     return OUTPUT_LOOP_DISABLED;
-//   }
-// }
-
-
-// void current_status_group_loop_1(traffic_status_t state)
-// {
-//   switch (state)
-//   {
-//   case INITIAL_TRANSIT_GAP:
-//     hmi_led_turn_off(0);
-//     loop_turn_off(0);
-
-//     hmi_led_turn_off(2);
-//     loop_turn_off(1);
-//     break;
-
-//   case INPUT_LOOP_ACTIVATION:
-//     hmi_led_turn_on(0);
-//     loop_turn_on(0);
-
-//     hmi_led_turn_off(2);
-//     loop_turn_off(1);
-//     break;
-
-//   case OUTPUT_LOOP_ACTIVATION:
-//     hmi_led_turn_on(0);
-//     loop_turn_on(0);
-
-//     hmi_led_turn_on(2);
-//     loop_turn_on(1);
-//     break;
-
-//   case INPUT_LOOP_DISABLED:
-//     hmi_led_turn_off(0);
-//     loop_turn_off(0);
-
-//     hmi_led_turn_on(2);
-//     loop_turn_on(1);
-//     break;
-
-//   case OUTPUT_LOOP_DISABLED:
-//     hmi_led_turn_off(0);
-//     loop_turn_off(0);
-
-//     hmi_led_turn_off(2);
-//     loop_turn_off(1);
-//     break;
-
-//   default:
-//     break;
-//   }
-// }
-
-// void current_status_group_loop_2(traffic_status_t state)
-// {
-//   switch (state)
-//   {
-//   case INITIAL_TRANSIT_GAP:
-//     hmi_led_turn_off(3);
-//     loop_turn_off(2);
-
-//     hmi_led_turn_off(5);
-//     loop_turn_off(3);
-//     break;
-
-//   case INPUT_LOOP_ACTIVATION:
-//     hmi_led_turn_on(3);
-//     loop_turn_on(2);
-
-//     hmi_led_turn_off(5);
-//     loop_turn_off(3);
-//     break;
-
-//   case OUTPUT_LOOP_ACTIVATION:
-//     hmi_led_turn_on(3);
-//     loop_turn_on(2);
-
-//     hmi_led_turn_on(5);
-//     loop_turn_on(3);
-//     break;
-
-//   case INPUT_LOOP_DISABLED:
-//     hmi_led_turn_off(3);
-//     loop_turn_off(2);
-
-//     hmi_led_turn_on(5);
-//     loop_turn_on(3);
-//     break;
-
-//   case OUTPUT_LOOP_DISABLED:
-//     hmi_led_turn_off(3);
-//     loop_turn_off(2);
-
-//     hmi_led_turn_off(5);
-//     loop_turn_off(3);
-//     break;
-
-//   default:
-//     break;
-//   }
-// }
-
-// AlissonGOE
-/******************************************************************************/
 
 void loop_init_apply(void)
 {
@@ -209,10 +45,54 @@ void loop_init_apply(void)
 
 /******************************************************************************/
 
+void loop_update_state(loop_state_update_t state, uint8_t index, loop_mode_t mode)
+{
+    const uint8_t LED_ENTER_LOOP[UPDATE_NUMBER_OF_LOOPS] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
+    const uint8_t LED_EXIT_LOOP[UPDATE_NUMBER_OF_LEDS] =  {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
+    const uint8_t ENTER_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_ENTER_GROUP_1, LOOP_ENTER_GROUP_2};
+    const uint8_t EXIT_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
+
+    switch (state)
+    {
+    case INITIAL_TRANSIT_GAP:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
+        break;
+    case INPUT_LOOP_ACTIVATION:
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
+        break;
+    case OUTPUT_LOOP_ACTIVATION:
+        hmi_led_turn_on (LED_ENTER_LOOP[index]);
+        loop_turn_on    (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_on (LED_EXIT_LOOP [index]);
+        loop_turn_on    (EXIT_LOOP_PIN [index]);
+        break;
+    case INPUT_LOOP_DISABLED:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_on (LED_EXIT_LOOP [index]);
+        loop_turn_on    (EXIT_LOOP_PIN [index]);
+        break;
+    case OUTPUT_LOOP_DISABLED:
+        hmi_led_turn_off(LED_ENTER_LOOP[index]);
+        loop_turn_off   (ENTER_LOOP_PIN[index]);
+        hmi_led_turn_off(LED_EXIT_LOOP [index]);
+        loop_turn_off   (EXIT_LOOP_PIN [index]);
+        break;
+      default:
+        break;
+    }
+}
+
+/******************************************************************************/
+
 void loop_1ms_clock(void)
 {
-
-  traffic_calculation_app();
 
 }
 
