@@ -4,12 +4,11 @@
 /******************************************************************************/
 
 #include "app_cfg.h"
-#include "loop.h"
+//#include "loop.h"
 
 /******************************************************************************/
 
 #define TIME_ZERO 0
-
 
 typedef enum
 {
@@ -36,13 +35,11 @@ typedef enum
   AXLE_NUMBER_OF_STATES
 }axle_state_t;
 
-
 typedef enum
 {
   CALC_ENABLE = 0,
   CALC_DISABLED
 } state_calc_t;
-
 
 typedef enum
 {
@@ -70,7 +67,6 @@ typedef enum
   GROUP_DISABLED
 } state_group_t;
 
-
 typedef enum
 {
   SET_TIMER = 0U,
@@ -93,6 +89,13 @@ typedef enum
   NUMBER_OF_VEHICLES
 } vehicle_class_t;
 
+typedef enum
+{
+  TRAFFIC_INIT = 0U,
+  TRAFFIC_CALC,
+  TRAFFIC_RUNNING
+}traffic_state_t;
+
 typedef struct 
 {
   uint16_t time_between_loops;
@@ -105,6 +108,7 @@ typedef struct
 typedef struct 
 {
   traffic_mode_t mode;
+  traffic_state_t state;
   uint8_t next_traffic;
   uint8_t traffic_id;
   uint8_t last_traffic;
@@ -119,18 +123,18 @@ typedef struct
 
 typedef struct 
 {
-    uint32_t      delay_time;  
-    uint8_t       piezo_index;    
-    axle_state_t  state;       
+  uint32_t      delay_time;  
+  uint8_t       piezo_index;    
+  axle_state_t  state;       
 } axle_t;
 
 typedef struct 
 {
-    axle_t*   axles;       
-    uint8_t   num_axles;
-    uint32_t  weight_ms; 
-    vehicle_states_t channel_state
-} app_piezo_data_t;
+  axle_t*   axles;       
+  uint8_t   num_axles;
+  uint32_t  weight_ms; 
+  vehicle_states_t  channel_state;
+}app_piezo_data_t;
 
 
 /******************************************************************************/
