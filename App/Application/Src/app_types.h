@@ -137,6 +137,30 @@ typedef struct
   vehicle_states_t  channel_state;
 }app_piezo_data_t;
 
+typedef struct 
+{
+  uint16_t time_in_loop;
+  uint16_t time_between_loops;
+  uint16_t time_execution_loops;
+  uint16_t time_start_piezo_ms;
+  uint16_t piezo_trigger_time[NUMBER_OF_VEHICLES];
+  uint16_t piezo_firing_window;
+  uint16_t time_trigger_for_axle[NUMBER_OF_AXLES];
+} calc_group_loop_t;
+
+typedef struct
+{
+  uint8_t vehicle_length;
+  uint8_t vehicle_axles[NUMBER_OF_AXLES];
+  uint8_t vehicle_number_axles;
+} vehicle_t;
+
+typedef struct
+{
+  calc_group_loop_t vehicle[NUMBER_OF_VEHICLES];
+  uint16_t time_gap_in_ms;
+  uint16_t speed_in_meters_per_second;
+} traffic_loop_group_t;
 
 /******************************************************************************/
 
