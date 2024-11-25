@@ -19,7 +19,6 @@ void piezo_turn_on(uint8_t index);
 void piezo_turn_off(uint8_t index);
 
 void piezo_pulse_received_parameters(uint8_t index,  piezo_pulse_data_t piezo_pulse_data_par);
-
 void piezo_1us_clock(void);
 
 void piezo_1ms_clock(void);    

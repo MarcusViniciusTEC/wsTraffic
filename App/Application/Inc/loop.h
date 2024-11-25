@@ -18,14 +18,13 @@ extern volatile uint32_t loop_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
-void piezo_turn_on(uint8_t index);
-void piezo_turn_off(uint8_t index);
-
 void loop_update_state(loop_state_update_t state, uint8_t index, traffic_mode_t mode);
+
 /******************************************************************************/
 
 void loop_turn_on(uint8_t index);
 void loop_turn_off(uint8_t index);
+
 void loop_1ms_clock(void);              
 void loop_init(void);                   
 void loop_update(void);                  

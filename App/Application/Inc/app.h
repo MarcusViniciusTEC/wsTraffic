@@ -8,7 +8,9 @@
 /******************************************************************************/
 
 extern volatile uint32_t app_execution_rate_1ms_timer;
+
 #define app_pexecution_rate_1ms_timer (&app_execution_rate_1ms_timer)
+
 #define APP_EXECUTION_RATE_1MS_TIME    100
 
 /******************************************************************************/
@@ -17,13 +19,10 @@ extern volatile uint32_t app_execution_rate_1ms_timer;
 /******************************************************************************/
 
 
-/******************************************************************************/
-// AlissonGOE
-
 void traffic_calculation_app(void);
 void value_traffic(void);
 
-// AlissonGOE
+
 /******************************************************************************/
 
 void app_1ms_clock(void);

@@ -14,7 +14,6 @@ volatile uint32_t piezo_execution_rate_1ms_timer;
 static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_OUTPUTS] = piezo_pininfo_vector_default_value;
 static piezo_pulse_data_t   piezo_pulse_data[NUMBER_OF_GROUPS] = {0};
 
-uint8_t mode_sat = MODE_CONV;
 
 /******************************************************************************/
 

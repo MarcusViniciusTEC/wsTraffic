@@ -2,6 +2,8 @@
 #define __LOOP_TYPES_H__
 
 #include "loop_cfg.h"
+//#include "app_types.h"
+
 
 #define LOOP_LED_LOOP_0 0
 #define LOOP_LED_LOOP_1 2
@@ -39,7 +41,6 @@ typedef struct
   uint8_t vehicle_length;
   uint8_t vehicle_axles[9];
   uint8_t vehicle_number_axles;
-
 } vehicle_t;
 
 
@@ -48,8 +49,6 @@ typedef struct
   calc_group_loop_t vehicle[11];
   uint16_t time_gap_in_ms;
   uint16_t speed_in_meters_per_second;
-//state_group_t state_group_loop;
-
 } traffic_loop_group_t;
 
 
