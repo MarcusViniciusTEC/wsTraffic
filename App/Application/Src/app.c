@@ -100,7 +100,10 @@ void vehicle_update_data(void)
         app_loop_data [index_group].loop_execution_time  = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_execution_loops;
         app_loop_data [index_group].start_piezo          = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_start_piezo_ms;
         app_loop_data [index_group].time_between_loops   = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_between_loops;
-        app_loop_data [index_group].state                = GROUP_ENABLE;
+        
+        app_loop_data [GROUP_1].state                = GROUP_ENABLE;
+        app_loop_data [GROUP_2].state                = GROUP_ENABLE;
+
         app_piezo_data[index_group].axles = axles[index_group];
         app_piezo_data[index_group].num_axles = vehicle_data[app_traffic_ctrl.traffic_id].vehicle_number_axles;
         app_piezo_data[index_group].weight_ms = 80;
@@ -113,6 +116,7 @@ void vehicle_update_data(void)
         app_piezo_data[index_group].axles[AXLE_7].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_7];
         app_piezo_data[index_group].axles[AXLE_8].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_8];
         app_piezo_data[index_group].axles[AXLE_9].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_9];
+        
         app_piezo_data[index_group].channel_state = CHANNEL_ENABLE; 
 
         for (int index_axles = 0; index_axles < app_piezo_data[index_group].num_axles; index_axles++) 
@@ -141,9 +145,17 @@ void app_update_1ms_state_loop(void)
             {
                 loop_update_state(INPUT_LOOP_ACTIVATION, index_channel_loop, app_traffic_ctrl.mode); 
                 if(TIMER_LOOP[index_channel_loop] == app_loop_data[index_channel_loop].gap + app_loop_data[index_channel_loop].start_piezo)
-                {   /*-------------------------- SAT MODO PESAGEM/CONVENCIONAL, TRIGGER PARA PIEZO DE ENTRADA --------------------------*/     
-                    app_piezo_ctrl[index_channel_loop].state_piezo_enter = START_PIEZO;
-                    app_piezo_ctrl[index_channel_loop].timer_state = RESET_TIMER;
+                {   /*-------------------------- SAT MODO PESAGEM/CONVENCIONAL, TRIGGER PARA PIEZO DE ENTRADA --------------------------*/  
+                    if(app_traffic_ctrl.mode == MODE_PE)
+                    {
+                        app_piezo_ctrl[GROUP_1].state_piezo_enter =  START_PIEZO;
+                        app_piezo_ctrl[GROUP_1].timer_state = RESET_TIMER;
+                    }
+                    else if(app_traffic_ctrl.mode == MODE_CONV)
+                    { 
+                        app_piezo_ctrl[index_channel_loop].state_piezo_enter = START_PIEZO;
+                        app_piezo_ctrl[index_channel_loop].timer_state = RESET_TIMER;
+                    }
                 }
             }
             else if (TIMER_LOOP[index_channel_loop] <= (app_loop_data[index_channel_loop].gap + app_loop_data[index_channel_loop].loop_execution_time))
@@ -151,7 +163,11 @@ void app_update_1ms_state_loop(void)
                 loop_update_state(OUTPUT_LOOP_ACTIVATION, index_channel_loop, app_traffic_ctrl.mode); 
                 if(TIMER_LOOP[index_channel_loop] == (uint32_t)(app_loop_data[index_channel_loop].gap + app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].start_piezo))
                 {    /*-------------------------- SAT MODO PESAGEM, TRIGGER PARA PIEZO DE SAIDA --------------------------*/        
-                    
+                    if(app_traffic_ctrl.mode == MODE_PE)
+                    {
+                        app_piezo_ctrl[GROUP_2].state_piezo_enter =  START_PIEZO;
+                        app_piezo_ctrl[GROUP_2].timer_state = RESET_TIMER;
+                    }   
                 }
             }
             else if (TIMER_LOOP[index_channel_loop] <= (uint32_t)(app_loop_data[index_channel_loop].loop_execution_time + app_loop_data[index_channel_loop].time_between_loops + app_loop_data[index_channel_loop].gap))
@@ -198,8 +214,9 @@ void app_update_1ms_state_piezo(void)
                     {    
                         piezo_pulse_data.state = PIEZO_PULSE_INIT;
                         piezo_pulse_data.delay = app_piezo_data[index_channel].weight_ms;
+                        piezo_pulse_data.mode = app_traffic_ctrl.mode;
                         app_piezo_data[index_channel].axles[index_axles].state = AXLE_INACTIVE;  
-                        piezo_pulse_received_parameters(index_channel, app_traffic_ctrl.mode, piezo_pulse_data);
+                        piezo_pulse_received_parameters(index_channel, piezo_pulse_data);
                     }  
                 }
             }
@@ -219,53 +236,44 @@ void app_set_address_and_mode(uint8_t addres, uint8_t mode)
         loop_update_state( OUTPUT_LOOP_DISABLED, GROUP_1, app_traffic_ctrl.mode);
         loop_update_state( OUTPUT_LOOP_DISABLED, GROUP_2, app_traffic_ctrl.mode);
         break;
-
     case 1:
         speed_traffic = 20;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 2:
         speed_traffic = 30;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 3:
         speed_traffic = 40;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 4:
         speed_traffic = 50;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 5:
         speed_traffic = 60;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 6:
         speed_traffic = 70;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-
     case 7:
         speed_traffic = 80;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
-    
     default:
         break;
     }
-
 }
 
 /******************************************************************************/
@@ -282,7 +290,6 @@ void app_read_address_and_mode(void)
     {
         mode = MODE_CONV;
     }
-
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 0);
@@ -291,7 +298,6 @@ void app_read_address_and_mode(void)
     {
         address &= ~(1 << 0);
     }
-
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 1);
@@ -300,7 +306,6 @@ void app_read_address_and_mode(void)
     {
         address &= ~(1 << 1);
     }
-
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_ON)
     {
         address |= (1 << 2);
@@ -309,7 +314,6 @@ void app_read_address_and_mode(void)
     {
         address &= ~(1 << 2);
     }
-
     app_set_address_and_mode(address, mode);
 }
 
@@ -345,7 +349,6 @@ void app_init(void)
 {   
     traffic_data();
     app_traffic_ctrl.state = TRAFFIC_STOP;
-
 }
 
 /******************************************************************************/
@@ -359,6 +362,7 @@ void app_update(void)
 
 void app_deinit(void)
 {
+
 }
 
 /******************************************************************************/

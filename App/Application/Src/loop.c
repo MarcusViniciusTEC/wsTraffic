@@ -47,11 +47,10 @@ void loop_init_apply(void)
 
 void loop_update_state(loop_state_update_t state, uint8_t index, traffic_mode_t mode)
 {
+    const uint8_t LED_EXIT_LOOP [UPDATE_NUMBER_OF_LOOPS]=   {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
     const uint8_t LED_ENTER_LOOP[UPDATE_NUMBER_OF_LOOPS] = {LED_LOOP_ENTER_GROUP_1, LED_LOOP_ENTER_GROUP_2};
-    const uint8_t LED_EXIT_LOOP[UPDATE_NUMBER_OF_LEDS] =  {LED_LOOP_EXIT_GROUP_1, LED_LOOP_EXIT_GROUP_2};
     const uint8_t ENTER_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_ENTER_GROUP_1, LOOP_ENTER_GROUP_2};
-    const uint8_t EXIT_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] = {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
-
+    const uint8_t EXIT_LOOP_PIN[UPDATE_NUMBER_OF_LOOPS] =  {LOOP_EXIT_GROUP_1, LOOP_EXIT_GROUP_2};
     switch (state)
     {
     case INITIAL_TRANSIT_GAP:

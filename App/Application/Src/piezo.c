@@ -13,7 +13,8 @@ volatile uint32_t piezo_execution_rate_1ms_timer;
 
 static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_OUTPUTS] = piezo_pininfo_vector_default_value;
 static piezo_pulse_data_t   piezo_pulse_data[NUMBER_OF_GROUPS] = {0};
-uint8_t mode_sat = 0;
+
+uint8_t mode_sat = MODE_CONV;
 
 /******************************************************************************/
 
@@ -38,7 +39,6 @@ void piezo_turn_off(uint8_t index)
 void piezo_pulse_1us(void)
 {
     LL_GPIO_TogglePin(MCU_STATUS_GPIO_Port, MCU_STATUS_Pin);
-
     for(uint8_t index_delay = 0; index_delay < NUMBER_OF_GROUPS; index_delay++)
     {
         if(piezo_pulse_data[index_delay].delay > 0 && piezo_pulse_data[index_delay].state == PIEZO_PULSE_PERIOD_TURN_ON)
@@ -50,10 +50,9 @@ void piezo_pulse_1us(void)
 
 /******************************************************************************/
 
-void piezo_pulse_received_parameters(uint8_t index, traffic_mode_t mode,  piezo_pulse_data_t piezo_pulse_data_par)
+void piezo_pulse_received_parameters(uint8_t index, piezo_pulse_data_t piezo_pulse_data_par)
 {
     piezo_pulse_data[index] = piezo_pulse_data_par;
-    mode_sat = mode;
 }
 
 /******************************************************************************/
@@ -68,15 +67,14 @@ static void piezo_pulse_update_state (uint8_t index) /*microseconds*/
         piezo_pulse_data[index].state = PIEZO_PULSE_TURN_ON;
         break;
     case PIEZO_PULSE_TURN_ON:
-        if(mode_sat == MODE_CONV)
+        if(piezo_pulse_data[index].mode == MODE_CONV)
         {
             hmi_led_turn_on(LEDS_PIEZO_CONV[index]);
         }
-        else if(mode_sat  == MODE_PE)
+        else if(piezo_pulse_data[index].mode == MODE_PE)
         {
             hmi_led_turn_on(LEDS_PIEZO_PE[index]);
-        }
-        
+        }  
         piezo_turn_on(index);
         piezo_pulse_data[index].state = PIEZO_PULSE_PERIOD_TURN_ON;
         break;
@@ -87,11 +85,11 @@ static void piezo_pulse_update_state (uint8_t index) /*microseconds*/
         }
         break;
     case PIEZO_PULSE_TURN_OFF:
-        if(mode_sat  == MODE_CONV)
+        if(piezo_pulse_data[index].mode == MODE_CONV)
         {
             hmi_led_turn_off(LEDS_PIEZO_CONV[index]);
         }
-        else if(mode_sat  == MODE_PE)
+        else if(piezo_pulse_data[index].mode == MODE_PE)
         {
             hmi_led_turn_off(LEDS_PIEZO_PE[index]);
         }
