@@ -337,7 +337,7 @@ void app_1ms_clock(void)
         app_traffic_ctrl.state = TRAFFIC_CALC;
         break;
     case TRAFFIC_CALC:
-        app_traffic_ctrl.gap_mts = 2;
+        app_traffic_ctrl.gap_mts = 5;
         traffic_calculation_app();
         app_traffic_ctrl.state = TRAFFIC_RUNNING;
         break;
