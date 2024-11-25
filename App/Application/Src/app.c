@@ -30,11 +30,6 @@ static app_piezo_ctrl_t app_piezo_ctrl[NUMBER_OF_GROUPS];
 static traffic_loop_group_t calc_group_loop[NUMBER_OF_GROUPS];
 static vehicle_t vehicle_data[NUMBER_OF_VEHICLES];
 
-uint16_t gap_traffic_in_second = 1000;
-uint8_t speed_traffic = 40;
-state_calc_t state_calc = CALC_ENABLE;
-state_sumulation_t state_simulation;
-
 /******************************************************************************/
 
 static void traffic_data(void);
@@ -42,30 +37,37 @@ static void traffic_mode(uint8_t mode);
 
 /******************************************************************************/
 
+uint16_t app_get_velocity()
+{
+    return ((app_traffic_ctrl.velocity_kmh * 1000) / 3.6);
+}
+
+/******************************************************************************/
+
+uint16_t app_get_gap()
+{
+    return app_traffic_ctrl.gap_mts * 1000;
+}
+
+/******************************************************************************/
+
 void traffic_calculation_app(void)
 {
-    static uint8_t group_index = CHANNEL_DEFAULT;
-
-    calc_group_loop[group_index].time_gap_in_ms = gap_traffic_in_second * 1000;
-    calc_group_loop[group_index].speed_in_meters_per_second = ((speed_traffic * 1000) / 3.6);
-
+    uint8_t group_index = CHANNEL_DEFAULT;
+    calc_group_loop[CHANNEL_DEFAULT].speed_in_meters_per_second = ((app_traffic_ctrl.velocity_kmh * 1000) / 3.6);
     for (vehicle_class_t vehicle_index = VEHICLES_CLASS_2C; vehicle_index <= NUMBER_OF_VEHICLES; (vehicle_class_t)vehicle_index++)
     {
         calc_group_loop[group_index].vehicle[vehicle_index].time_between_loops = (((LENGHT_LOOP_MTS + DISTANCE_BETWEEN_LOOPS_MTS) * 1000000) / calc_group_loop[group_index].speed_in_meters_per_second);
-
         calc_group_loop[group_index].vehicle[vehicle_index].time_in_loop = ((LENGHT_LOOP_MTS * 1000000) / calc_group_loop[group_index].speed_in_meters_per_second);
-
         calc_group_loop[group_index].vehicle[vehicle_index].time_execution_loops = ((vehicle_data[vehicle_index].vehicle_length * 1000000) / calc_group_loop[group_index].speed_in_meters_per_second) + calc_group_loop[group_index].vehicle[vehicle_index].time_in_loop;
-
         calc_group_loop[group_index].vehicle[vehicle_index].time_start_piezo_ms = (((LENGHT_LOOP_MTS * 1000000) + 500000) / calc_group_loop[group_index].speed_in_meters_per_second);
-
         calc_group_loop[group_index].vehicle[vehicle_index].piezo_firing_window = (calc_group_loop[group_index].vehicle[vehicle_index].time_execution_loops - (2 * calc_group_loop[group_index].vehicle[vehicle_index].time_start_piezo_ms));
-
         for (axle_types_t axle_index = AXLE_1; axle_index <= vehicle_data[vehicle_index].vehicle_number_axles; (axle_types_t)axle_index++)
         {
             calc_group_loop[group_index].vehicle[vehicle_index].time_trigger_for_axle[axle_index] = ((calc_group_loop[group_index].vehicle[vehicle_index].piezo_firing_window * vehicle_data[vehicle_index].vehicle_axles[axle_index]) / 100);
-        }
+        }     
     }
+    calc_group_loop[group_index].time_gap_in_ms = app_traffic_ctrl.gap_mts * 1000;
 }
 
 /******************************************************************************/
@@ -86,7 +88,6 @@ static void traffic_ctrl_increment_id(void)
 
 void vehicle_update_data(void)
 {
-    // app_traffic_ctrl.mode = MODE_CONV;
     traffic_ctrl_increment_id();
     for (uint8_t index_group = 0; index_group < 2; index_group++)
     {
@@ -94,9 +95,6 @@ void vehicle_update_data(void)
         app_loop_data[index_group].loop_execution_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_execution_loops;
         app_loop_data[index_group].start_piezo = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_start_piezo_ms;
         app_loop_data[index_group].time_between_loops = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_between_loops;
-
-        // app_loop_data [GROUP_1].state                = GROUP_ENABLE;
-        // app_loop_data [GROUP_2].state                = GROUP_DISABLED;
 
         app_piezo_data[index_group].axles = axles[index_group];
         app_piezo_data[index_group].num_axles = vehicle_data[app_traffic_ctrl.traffic_id].vehicle_number_axles;
@@ -231,11 +229,9 @@ void app_update_1ms_state_piezo(void)
 
 /******************************************************************************/
 
-void app_set_address_and_mode(uint8_t addres, uint8_t mode)
+void app_set_address_and_mode(uint8_t address, uint8_t mode)
 {
-
-
-    switch (addres)
+    switch (address)
     {
     case 0:
         app_traffic_ctrl.state = TRAFFIC_STOP;
@@ -243,37 +239,37 @@ void app_set_address_and_mode(uint8_t addres, uint8_t mode)
         loop_update_state(OUTPUT_LOOP_DISABLED, GROUP_2, app_traffic_ctrl.mode);
         break;
     case 1:
-        speed_traffic = 20;
+        app_traffic_ctrl.velocity_kmh = 30;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 2:
-        speed_traffic = 30;
+        app_traffic_ctrl.velocity_kmh = 50;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 3:
-        speed_traffic = 40;
+        app_traffic_ctrl.velocity_kmh = 60;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 4:
-        speed_traffic = 50;
+        app_traffic_ctrl.velocity_kmh = 90;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 5:
-        speed_traffic = 60;
+        app_traffic_ctrl.velocity_kmh = 100;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 6:
-        speed_traffic = 70;
+        app_traffic_ctrl.velocity_kmh = 110;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
     case 7:
-        speed_traffic = 80;
+        app_traffic_ctrl.velocity_kmh = 120;
         app_traffic_ctrl.traffic_id = VEHICLES_CLASS_2C;
         app_traffic_ctrl.state = TRAFFIC_INIT;
         break;
@@ -302,11 +298,11 @@ void app_read_address_and_mode(void)
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_ON)
     {
-        address |= (1 << 0);
+        address |= (1 << 1);
     }
     else
     {
-        address &= ~(1 << 0);
+        address &= ~(1 << 1);
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_ON)
     {
@@ -314,11 +310,11 @@ void app_read_address_and_mode(void)
     }
     else
     {
-        address &= ~(1 << 1);
+        address &= ~(1 << 0);
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_ON)
     {
-        address |= (1 << 2);
+        address |= (1 << 0);
     }
     else
     {
@@ -329,7 +325,6 @@ void app_read_address_and_mode(void)
         address_copy = address;
         app_set_address_and_mode(address, mode);
     }
-
 }
 
 /******************************************************************************/
@@ -342,6 +337,7 @@ void app_1ms_clock(void)
         app_traffic_ctrl.state = TRAFFIC_CALC;
         break;
     case TRAFFIC_CALC:
+        app_traffic_ctrl.gap_mts = 2;
         traffic_calculation_app();
         app_traffic_ctrl.state = TRAFFIC_RUNNING;
         break;

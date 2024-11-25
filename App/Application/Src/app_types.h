@@ -110,9 +110,9 @@ typedef struct
 {
   traffic_mode_t mode;
   traffic_state_t state;
-  uint8_t next_traffic;
   uint8_t traffic_id;
-  uint8_t last_traffic;
+  uint16_t velocity_kmh;
+  uint16_t gap_mts;
 }app_traffic_ctrl_t;
 
 typedef struct
