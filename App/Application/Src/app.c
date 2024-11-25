@@ -67,7 +67,7 @@ void traffic_calculation_app(void)
             calc_group_loop[group_index].vehicle[vehicle_index].time_trigger_for_axle[axle_index] = ((calc_group_loop[group_index].vehicle[vehicle_index].piezo_firing_window * vehicle_data[vehicle_index].vehicle_axles[axle_index]) / 100);
         }     
     }
-    calc_group_loop[group_index].time_gap_in_ms = app_traffic_ctrl.gap_mts * 1000;
+    calc_group_loop[group_index].time_gap_in_ms = ((app_traffic_ctrl.gap_mts * 1000000) / calc_group_loop[group_index].speed_in_meters_per_second);
 }
 
 /******************************************************************************/
@@ -298,11 +298,11 @@ void app_read_address_and_mode(void)
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT1_GPIO_PORT, APP_ID_BIT1_GPIO_PIN) == KEY_ON)
     {
-        address |= (1 << 1);
+        address |= (1 << 2);
     }
     else
     {
-        address &= ~(1 << 1);
+        address &= ~(1 << 2);
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT2_GPIO_PORT, APP_ID_BIT2_GPIO_PIN) == KEY_ON)
     {
@@ -310,7 +310,7 @@ void app_read_address_and_mode(void)
     }
     else
     {
-        address &= ~(1 << 0);
+        address &= ~(1 << 1);
     }
     if (LL_GPIO_IsInputPinSet(APP_ID_BIT3_GPIO_PORT, APP_ID_BIT3_GPIO_PIN) == KEY_ON)
     {
@@ -318,7 +318,7 @@ void app_read_address_and_mode(void)
     }
     else
     {
-        address &= ~(1 << 2);
+        address &= ~(1 << 0);
     }
     if (address_copy != address)
     {
