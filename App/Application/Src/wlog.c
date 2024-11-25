@@ -124,7 +124,7 @@ void wlog(const char *format, ...)
 
 void wlog_tx(uint8_t token)
 {
- // LL_USART_TransmitData8(USART1, token);
+  //LL_USART_TransmitData8(USART1, token);
 }
 
 

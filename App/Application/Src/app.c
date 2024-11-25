@@ -8,7 +8,7 @@
 #include "loop.h"
 #include "piezo.h"
 #include "loop_types.h"
-#include "wlog.h"
+//#include "wlog.h"
 
 /******************************************************************************/
 
@@ -98,7 +98,7 @@ void vehicle_update_data(void)
 
         app_piezo_data[index_group].axles = axles[index_group];
         app_piezo_data[index_group].num_axles = vehicle_data[app_traffic_ctrl.traffic_id].vehicle_number_axles;
-        app_piezo_data[index_group].weight_ms = 80;
+        app_piezo_data[index_group].weight_ms = 120;
         app_piezo_data[index_group].axles[AXLE_1].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_1];
         app_piezo_data[index_group].axles[AXLE_2].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_2];
         app_piezo_data[index_group].axles[AXLE_3].delay_time = calc_group_loop[CHANNEL_DEFAULT].vehicle[app_traffic_ctrl.traffic_id].time_trigger_for_axle[AXLE_3];
@@ -366,7 +366,7 @@ void app_init(void)
 void app_update(void)
 {
     app_read_address_and_mode();
-    wlog("ReInit GPIO Module");
+   // wlog("ReInit GPIO Module");
 }
 
 /******************************************************************************/
