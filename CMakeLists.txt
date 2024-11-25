@@ -60,6 +60,7 @@ ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_pwr.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_gpio.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_exti.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_tim.c
+${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_usart.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_dma.c
 
 ${PROJ_PATH}/Core/Startup/startup_stm32f030r8tx.s

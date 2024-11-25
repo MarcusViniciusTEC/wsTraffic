@@ -26,6 +26,7 @@
 #include "sl.h"
 #include "app.h"
 #include "hmi.h"
+#include "wlog.h"
 #include "piezo.h"
 
 /* USER CODE END Includes */
@@ -95,7 +96,6 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-    hmi_led_turn_on(5);
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
@@ -133,6 +133,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
   /* USER CODE END SysTick_IRQn 0 */
+
   /* USER CODE BEGIN SysTick_IRQn 1 */
   sl_1ms_clock();
   /* USER CODE END SysTick_IRQn 1 */
@@ -156,6 +157,40 @@ void TIM6_IRQHandler(void)
   /* USER CODE END TIM6_IRQn 0 */
   /* USER CODE BEGIN TIM6_IRQn 1 */
   /* USER CODE END TIM6_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+  if(LL_USART_IsActiveFlag_ORE(USART1) != 0)
+  {
+	  LL_USART_ClearFlag_ORE(USART1);
+  }
+
+  if(LL_USART_IsActiveFlag_RXNE(USART1) != 0)
+  {
+	  uint8_t token;
+	  token = LL_USART_ReceiveData8(USART1);
+	  wlog_rx(token);
+  }
+
+  if(LL_USART_IsActiveFlag_TXE(USART1) != 0)
+  {
+  }
+
+  if(LL_USART_IsActiveFlag_TC(USART1) != 0)
+  {
+	  LL_USART_ClearFlag_TC(USART1);
+	  wlog_tx_next();
+  }
+
+  /* USER CODE END USART1_IRQn 0 */
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
