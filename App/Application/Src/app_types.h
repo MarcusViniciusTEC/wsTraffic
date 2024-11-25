@@ -4,7 +4,7 @@
 /******************************************************************************/
 
 #include "app_cfg.h"
-//#include "loop.h"
+#include "loop_types.h"
 
 /******************************************************************************/
 
@@ -47,6 +47,20 @@ typedef enum
   GROUP_2,
   NUMBER_OF_GROUPS
 } number_groups_t;
+
+typedef enum
+{
+  AXLE_1 = 0U,
+  AXLE_2,
+  AXLE_3,
+  AXLE_4,
+  AXLE_5,
+  AXLE_6,
+  AXLE_7,
+  AXLE_8,
+  AXLE_9,
+  NUMBER_OF_AXLES
+}axle_types_t;
 
 typedef enum 
 {

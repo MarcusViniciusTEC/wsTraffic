@@ -33,20 +33,6 @@ typedef enum
     PIEZO_PULSE_TURN_OFF
 }led_pulse_state_t;
 
-typedef enum
-{
-  AXLE_1 = 0U,
-  AXLE_2,
-  AXLE_3,
-  AXLE_4,
-  AXLE_5,
-  AXLE_6,
-  AXLE_7,
-  AXLE_8,
-  AXLE_9,
-  NUMBER_OF_AXLES
-}axle_types_t;
-
 typedef struct 
 {
     uint16_t delay;
