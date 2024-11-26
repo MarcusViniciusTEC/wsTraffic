@@ -10,6 +10,20 @@
 
 #define TIME_ZERO 0
 
+
+typedef enum
+{
+  ADDRESS_0 = 0U,
+  ADDRESS_1,
+  ADDRESS_2,
+  ADDRESS_3,
+  ADDRESS_4,
+  ADDRESS_5,
+  ADDRESS_6,
+  ADDRESS_7,
+  ADDRESS_8
+}adress_types_t;
+
 typedef enum
 {
   KEY_ON = 0,

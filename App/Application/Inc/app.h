@@ -15,16 +15,6 @@ extern volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
-
-/******************************************************************************/
-
-
-void traffic_calculation_app(void);
-void value_traffic(void);
-
-
-/******************************************************************************/
-
 void app_1ms_clock(void);
 void app_init(void);
 void app_update(void);

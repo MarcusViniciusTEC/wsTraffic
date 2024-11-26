@@ -2,8 +2,6 @@
 #define __LOOP_TYPES_H__
 
 #include "loop_cfg.h"
-//#include "app_types.h"
-
 
 #define LOOP_LED_LOOP_0 0
 #define LOOP_LED_LOOP_1 2

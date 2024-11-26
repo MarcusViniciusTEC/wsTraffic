@@ -105,7 +105,6 @@ int main(void)
   while (1)
   {
     sl_update();
-    //LL_TIM_EnableIT_UPDATE(TIM6);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
