@@ -407,6 +407,14 @@ static void traffic_data(void)
     vehicle_data[VEHICLES_CLASS_2S3].vehicle_axles[AXLE_3] = 78;
     vehicle_data[VEHICLES_CLASS_2S3].vehicle_axles[AXLE_4] = 87;
     vehicle_data[VEHICLES_CLASS_2S3].vehicle_axles[AXLE_5] = 95;
+
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_length = 19;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_number_axles = 5;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_1] = 2;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_2] = 24;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_3] = 32;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_4] = 61;
+    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_5] = 95;
  
     vehicle_data[VEHICLES_CLASS_3S3].vehicle_length = 20;
     vehicle_data[VEHICLES_CLASS_3S3].vehicle_number_axles = 6;
@@ -426,14 +434,6 @@ static void traffic_data(void)
     vehicle_data[VEHICLES_CLASS_3D3].vehicle_axles[AXLE_5] = 86;
     vehicle_data[VEHICLES_CLASS_3D3].vehicle_axles[AXLE_6] = 93;
  
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_length = 19;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_number_axles = 5;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_1] = 2;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_2] = 24;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_3] = 32;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_4] = 61;
-    vehicle_data[VEHICLES_CLASS_3C2].vehicle_axles[AXLE_5] = 95;
- 
     vehicle_data[VEHICLES_CLASS_2J4].vehicle_length = 19;
     vehicle_data[VEHICLES_CLASS_2J4].vehicle_number_axles = 6;
     vehicle_data[VEHICLES_CLASS_2J4].vehicle_axles[AXLE_1] = 2;
@@ -443,14 +443,15 @@ static void traffic_data(void)
     vehicle_data[VEHICLES_CLASS_2J4].vehicle_axles[AXLE_5] = 86;
     vehicle_data[VEHICLES_CLASS_2J4].vehicle_axles[AXLE_6] = 94;
  
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_length = 19;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_number_axles = 6;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_1] = 2;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_2] = 19;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_3] = 49;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_4] = 57;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_5] = 86;
-    vehicle_data[VEHICLES_CLASS_2D4].vehicle_axles[AXLE_6] = 95;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_length = 20;               ///mudar para 7 eixos
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_number_axles = 7;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_1] = 2;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_2] = 17;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_3] = 25;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_4] = 50;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_5] = 62;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_6] = 87;
+    vehicle_data[VEHICLES_CLASS_3IJ].vehicle_axles[AXLE_7] = 95;
  
     vehicle_data[VEHICLES_CLASS_35D].vehicle_length = 30;
     vehicle_data[VEHICLES_CLASS_35D].vehicle_number_axles = 8;
